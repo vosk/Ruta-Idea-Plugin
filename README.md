@@ -3,7 +3,7 @@ This Idea plugin adds support for UIMA Ruta in IntelliJ.
 
 #License 
 See ./LICENSE 
-#Based on
+## Based on
 There is an ANTLR4-to-Idea adaptor and a sample usage project.
 However, the ruta parser has been defined in ANTLR 3 and I don't plan to rewrite it.
 So I maed a fing.  
@@ -15,7 +15,7 @@ and
 https://github.com/antlr/jetbrains-plugin-sample
 
 
-#For Developers
+## For Developers
 
 This software uses Gradle.
 There is a  `downloadRuta` Gradle Task that downloads the ruta ANTLR3 parser and lexer definition from GitHub at:
@@ -28,7 +28,7 @@ Since the actual ruta-core is a dependency, and that cannot be used (AFAIK) for 
 the downloaded files are moved to a different package, to coexist happily with the real thing.
 
 
-#Roadmap
+## Roadmap
 
 1. Get a syntax analyzer working
     * Get parser to build - {done} 
