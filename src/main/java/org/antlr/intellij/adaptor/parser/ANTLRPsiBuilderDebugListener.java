@@ -122,7 +122,7 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
         ProgressIndicatorProvider.checkCanceled();
         PsiBuilder.Marker marker = markers.pop();
         if(errorStack.isEmpty()){
-            marker.done(factory.getOrRegisterRule(ruleName));
+            marker.done(factory.getOrRegisterAsRule(ruleName));
             //marker.done(new RuleIElementType(1,ruleName,language));
         }else {
 

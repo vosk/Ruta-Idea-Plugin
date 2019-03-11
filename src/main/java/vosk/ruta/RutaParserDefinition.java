@@ -37,11 +37,14 @@ import org.jetbrains.annotations.NotNull;
 import vosk.ruta.psi.RutaFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RutaParserDefinition implements ParserDefinition {
     public static final IFileElementType FILE =
             new IFileElementType(RutaLanguage.INSTANCE);
-    public static  TokenLoader loader = null;
+    public static TokenLoader loader = null;
 
     public static TokenIElementType ID;
 
@@ -57,10 +60,35 @@ public class RutaParserDefinition implements ParserDefinition {
     }
 
     public RutaParserDefinition() {
-        if(loader == null){
+        if (loader == null) {
+            Field[] declaredFields = RutaLexer.class.getDeclaredFields();
+            List<Field> staticFields;
+            staticFields= Arrays.asList(declaredFields).stream()
+                    .filter(f-> java.lang.reflect.Modifier.isStatic(f.getModifiers()))
+                    .filter(f->java.lang.reflect.Modifier.isFinal(f.getModifiers()))
+                    .filter(f -> f.getType()==Integer.TYPE)
+                    .collect(Collectors.toList());
+
+            List<Integer> tokenIds;
+
+            tokenIds = staticFields.stream().map(f -> {
+                try {
+                    return f.getInt(null);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                return Integer.MIN_VALUE;
+            })
+                    .collect(Collectors.toList());
+
+
             loader = new TokenLoader();
             try {
-                loader.load(RutaLanguage.INSTANCE, this.getClass().getResourceAsStream("/ruta/antlr/RutaParser.tokens"));
+
+                loader.load(RutaLanguage.INSTANCE,
+                        this.getClass().getResourceAsStream("/ruta/antlr/RutaParser.tokens"),
+                        (Map.Entry<Integer, String> entry) -> tokenIds.contains(entry.getKey())
+                );
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,7 +132,8 @@ public class RutaParserDefinition implements ParserDefinition {
         return new ANTLRParserAdaptor(RutaLanguage.INSTANCE, parser) {
             @Override
             protected void parse(DebugParser parser, IElementType root) throws RecognitionException {
-                ((RutaParser)parser).file_input(root.toString());
+                RutaParserLogic.parse((RutaParser) parser, root);
+
                 // start rule depends on root passed in; sometimes we want to create an ID node etc...
 //                if ( root instanceof IFileElementType ) {
 //                    return ((RutaLanguageParser) parser).script();
@@ -213,11 +242,14 @@ public class RutaParserDefinition implements ParserDefinition {
         parser.setExternalFactory(new RutaExternalFactory());
         parser.setContext(null);
         parser.setResourcePaths(new String[]{});
-        parser.setResourceManager( ResourceManagerFactory.newResourceManager());
+        parser.setResourceManager(ResourceManagerFactory.newResourceManager());
 
         return parser;
     }
-    /** "Tokens of those types are automatically skipped by PsiBuilder." */
+
+    /**
+     * "Tokens of those types are automatically skipped by PsiBuilder."
+     */
     @NotNull
     public TokenSet getWhitespaceTokens() {
         return TokenSet.EMPTY; //TODO
@@ -237,57 +269,60 @@ public class RutaParserDefinition implements ParserDefinition {
         return SpaceRequirements.MAY;
     }
 
-    /** What is the IFileElementType of the root parse tree node? It
-     *  is called from {@link #createFile(FileViewProvider)} at least.
+    /**
+     * What is the IFileElementType of the root parse tree node? It
+     * is called from {@link #createFile(FileViewProvider)} at least.
      */
     @Override
     public IFileElementType getFileNodeType() {
         return FILE;
     }
 
-    /** Create the root of your PSI tree (a PsiFile).
-     *
-     *  From IntelliJ IDEA Architectural Overview:
-     *  "A PSI (Program Structure Interface) file is the root of a structure
-     *  representing the contents of a file as a hierarchy of elements
-     *  in a particular programming language."
-     *
-     *  PsiFile is to be distinguished from a FileASTNode, which is a parse
-     *  tree node that eventually becomes a PsiFile. From PsiFile, we can get
-     *  it back via: {@link PsiFile#getNode}.
+    /**
+     * Create the root of your PSI tree (a PsiFile).
+     * <p>
+     * From IntelliJ IDEA Architectural Overview:
+     * "A PSI (Program Structure Interface) file is the root of a structure
+     * representing the contents of a file as a hierarchy of elements
+     * in a particular programming language."
+     * <p>
+     * PsiFile is to be distinguished from a FileASTNode, which is a parse
+     * tree node that eventually becomes a PsiFile. From PsiFile, we can get
+     * it back via: {@link PsiFile#getNode}.
      */
     @Override
     public PsiFile createFile(FileViewProvider viewProvider) {
         return new RutaFile(viewProvider);
     }
 
-    /** Convert from *NON-LEAF* parse node (AST they call it)
-     *  to PSI node. Leaves are created in the AST factory.
-     *  Rename re-factoring can cause this to be
-     *  called on a TokenIElementType since we want to rename ID nodes.
-     *  In that case, this method is called to create the root node
-     *  but with ID type. Kind of strange, but we can simply create a
-     *  ASTWrapperPsiElement to make everything work correctly.
-     *
-     *  RuleIElementType.  Ah! It's that ID is the root
-     *  IElementType requested to parse, which means that the root
-     *  node returned from parsetree->PSI conversion.  But, it
-     *  must be a CompositeElement! The adaptor calls
-     *  rootMarker.done(root) to finish off the PSI conversion.
-     *  See {@link ANTLRParserAdaptor#parse(IElementType root,
-     *  PsiBuilder)}
-     *
-     *  If you don't care to distinguish PSI nodes by type, it is
-     *  sufficient to create a {@link ANTLRPsiNode} around
-     *  the parse tree node
+    /**
+     * Convert from *NON-LEAF* parse node (AST they call it)
+     * to PSI node. Leaves are created in the AST factory.
+     * Rename re-factoring can cause this to be
+     * called on a TokenIElementType since we want to rename ID nodes.
+     * In that case, this method is called to create the root node
+     * but with ID type. Kind of strange, but we can simply create a
+     * ASTWrapperPsiElement to make everything work correctly.
+     * <p>
+     * RuleIElementType.  Ah! It's that ID is the root
+     * IElementType requested to parse, which means that the root
+     * node returned from parsetree->PSI conversion.  But, it
+     * must be a CompositeElement! The adaptor calls
+     * rootMarker.done(root) to finish off the PSI conversion.
+     * See {@link ANTLRParserAdaptor#parse(IElementType root,
+     * PsiBuilder)}
+     * <p>
+     * If you don't care to distinguish PSI nodes by type, it is
+     * sufficient to create a {@link ANTLRPsiNode} around
+     * the parse tree node
      */
     @NotNull
     public PsiElement createElement(ASTNode node) {
         IElementType elType = node.getElementType();
-        if ( elType instanceof TokenIElementType ) {
+        if (elType instanceof TokenIElementType) {
             return new ANTLRPsiNode(node);
         }
-        if ( !(elType instanceof RuleIElementType) ) {
+        if (!(elType instanceof RuleIElementType)) {
             return new ANTLRPsiNode(node);
         }
 //TODO        RuleIElementType ruleElType = (RuleIElementType) elType;

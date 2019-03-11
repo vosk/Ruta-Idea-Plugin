@@ -22,7 +22,7 @@ public class PsiLanguageElementFactory {
         this.language = language;
     }
 
-    public synchronized void register(Map<String, Integer> map, Predicate<String> isLeaf) {
+    public synchronized void register(Map<String, Integer> map, Predicate<Map.Entry<Integer,String>> isLeaf) {
         Map<Integer, String> mapInverted =
                 map.entrySet()
                         .stream()
@@ -33,7 +33,7 @@ public class PsiLanguageElementFactory {
                 .stream()
                 .forEach(entry ->{
                     IElementType type;
-                    if(isLeaf.test(entry.getValue())){
+                    if(isLeaf.test(entry)){
                         type = new TokenIElementType(entry.getKey(), Token.DEFAULT_CHANNEL,entry.getValue(),language);
                     } else {
                         type = new RuleIElementType(entry.getKey(),entry.getValue(),language);
@@ -51,7 +51,7 @@ public class PsiLanguageElementFactory {
         return tokenElementFromString.get(index);
     }
 
-    public IElementType getOrRegisterRule(String name) {
+    public IElementType getOrRegisterAsRule(String name) {
         IElementType exists= get(name);
         if(exists != null){
             return exists;

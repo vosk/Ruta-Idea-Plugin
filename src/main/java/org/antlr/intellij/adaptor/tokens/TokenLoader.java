@@ -8,15 +8,16 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 public class TokenLoader {
 
-    public void load(Language language, InputStream toLoad) throws IOException {
+    public void load(Language language, InputStream toLoad, Predicate<Map.Entry<Integer, String>> isToken) throws IOException {
         Properties props = new Properties();
-        Map<String,Integer> values= new HashMap<>();
+        Map<String, Integer> values = new HashMap<>();
         props.load(toLoad);
-        props.forEach((key,value) -> values.put((String) key, Integer.valueOf((String) value)));
-        PsiElementFactory.get(language).register(values, str-> str.equals(str.toUpperCase()));
+        props.forEach((key, value) -> values.put((String) key, Integer.valueOf((String) value)));
+        PsiElementFactory.get(language).register(values, isToken);
 
     }
 }

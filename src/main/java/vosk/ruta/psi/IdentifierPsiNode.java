@@ -32,8 +32,8 @@ import vosk.ruta.RutaLanguage;
  *  You can click on an ID in the editor and ask for a rename for any node
  *  of this type.
  */
-public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedElement {
-	public IdentifierPSINode(IElementType type, CharSequence text) {
+public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNamedElement {
+	public IdentifierPsiNode(IElementType type, CharSequence text) {
 		super(type, text);
 	}
 
@@ -64,20 +64,21 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 				kind = "func def ";
 			}
 		}
-		System.out.println("IdentifierPSINode.setName("+name+") on "+
+		System.out.println("IdentifierPsiNode.setName("+name+") on "+
 			                   kind+this+" at "+Integer.toHexString(this.hashCode()));
 		*/
 		//TODO this doesnt work
 		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).get(RutaParser.Identifier);
+//		RutaASTFactory.
 		PsiElement newID = Trees.createLeafFromText(getProject(),
 		                                            RutaLanguage.INSTANCE,
 		                                            getContext(),
 		                                            name,
 													type);
-		if ( newID!=null ) {
+//		if ( newID!=null ) {
 			return this.replace(newID); // use replace on leaves but replaceChild on ID nodes that are part of defs/decls.
-		}
-		return this;
+//		}
+//		return this;
 	}
 
 	/** Create and return a PsiReference object associated with this ID
