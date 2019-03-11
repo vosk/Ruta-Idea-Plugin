@@ -1,0 +1,19 @@
+PACKAGE test;
+SCRIPT test2;
+
+DECLARE decl(STRING str,STRING str2,asdeasd bbb);
+
+DECLARE Annotation EmplRelation
+   (Employee employeeRef, Employer employerRef);
+Sentence{CONTAINS(EmploymentIndicator) -> CREATE(EmplRelation,
+    "employeeRef" = Employee, "employerRef" = Employer)};
+
+DECLARE Text1, Text2;
+ANY+{ -> MARK(Text1)};
+ANY+{-PARTOF(Text2) -> MARK(Text2)};
+
+Sentence{CONTAINS(EmploymentIndicator) -> CREATE(EmplRelation,
+    "employeeRef" = Employee, "employerRef" = Employer)};
+
+Sentence{CONTAINS(EmploymentIndicator) -> CREATE(EmplRelation,
+    "employeeRef" = Employee, "employerRef" = Employer)};

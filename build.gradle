@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'antlr'
+    id 'org.jetbrains.intellij' version '0.4.4'
+    id "de.undercouch.download" version "1.2"
+}
+
+group 'vosk.ruta'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+//final antlr4Version = '4.7.2'
+final antlr3Version = '3.5.2'
+final rutaVersion = '2.7.0'
+dependencies {
+    antlr("org.antlr:antlr:$antlr3Version") {
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
+    implementation group: 'org.apache.uima', name: 'ruta-core', version: rutaVersion
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+intellij {
+    version '2018.3.5'
+//    setPlugins("PsiViewer")
+    pluginName 'antlr4-intellij-plugin-sample'
+    plugins 'Groovy','PsiViewer:183.2153'
+    downloadSources true
+    updateSinceUntilBuild false
+}
+patchPluginXml {
+    changeNotes """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
+def genSource= 'src/main/gen'
+def parserPackage= "org.apache.uima.ruta.parser.debug"
+sourceSets.main.java.srcDir genSource
+
+generateGrammarSource {
+    outputDirectory = file(genSource+"/"+parserPackage.replace(".","/"))
+    arguments += ['-visitor', '-long-messages', '-debug']
+//    arguments += ["-package", "org.apache.uima.ruta.parser", "-Xexact-output-dir"]
+}
+
+
+
+task downloadRuta(type: Download) {
+    def basePath = 'https://raw.githubusercontent.com/apache/uima-ruta/ruta-'+rutaVersion+'/ruta-core/src/main/antlr3/org/apache/uima/ruta/parser/'
+    src([
+            basePath+'RutaLexer.g',
+            basePath+'RutaLexer.tokens',
+            basePath+'RutaParser.g',
+            basePath+'RutaParser.tokens'
+    ])
+    dest 'src/main/antlr'
+}
+downloadRuta.doLast {
+    ant.replaceregexp(match:'org.apache.uima.ruta.parser', replace:parserPackage, flags:'g', byline:true) {
+        fileset(dir: 'src/main/antlr', includes: '*.g')
+    }
+}
+
+downloadRuta.doLast {
+    copy {
+        from 'src/main/antlr'
+        include "*"
+        into 'src/main/resources/ruta/antlr'
+    }
+}

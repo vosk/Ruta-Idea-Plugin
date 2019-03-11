@@ -1,0 +1,30 @@
+<idea-plugin>
+    <id>vosk.ruta.ruta-language</id>
+    <name>UIMA Ruta Language Support</name>
+    <vendor email="manos.orfanoudakis@gmail.com" url="">Manos Orfanoudakis</vendor>
+
+    <description><![CDATA[
+    UIMA Ruta Support for IDEA <br>
+    Basic editor and more in the future
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="vosk.ruta.RutaFileTypeFactory"/>
+        <lang.parserDefinition language="Ruta" implementationClass="vosk.ruta.RutaParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Ruta" implementationClass="vosk.ruta.highlight.RutaSyntaxHighlighterFactory"/>
+        <lang.ast.factory language="Ruta" implementationClass="vosk.ruta.RutaASTFactory"/>
+
+
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
