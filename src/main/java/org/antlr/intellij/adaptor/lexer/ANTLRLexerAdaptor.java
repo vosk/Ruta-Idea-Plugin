@@ -39,7 +39,7 @@ import java.util.Map;
 public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
     /**
      * Gets the {@link Language} supported by this lexer. This
-     * value is passed to {@link PSIElementTypeFactory} to ensure the
+     * value is passed to {@link PSIElementFactory} to ensure the
      * correct collection of {@link IElementType} is used for
      * assigning element types to tokens in {@link #getTokenType}.
      */
@@ -129,19 +129,6 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
 //TODO        this.tokenElementTypes = createTokenIElementTypes(language,lexer.getTokenNames());
         this.lexer = lexer;
     }
-
-//    public static List<TokenIElementType> createTokenIElementTypes(Language language, String[] tokenNames) {
-//        List<TokenIElementType> result;
-//        TokenIElementType[] elementTypes = new TokenIElementType[tokenNames.length];
-//        for (int i = 0; i < tokenNames.length; i++) {
-//            if ( tokenNames[i]!=null ) {
-//                elementTypes[i] = new TokenIElementType(i, tokenNames[i], language);
-//            }
-//        }
-//
-//        result = Collections.unmodifiableList(Arrays.asList(elementTypes));
-//        return result;
-//    }
 
     /**
      * Gets the ANTLR {@link Lexer} used for actual tokenization of the input.

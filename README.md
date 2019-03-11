@@ -2,6 +2,7 @@
 This Idea plugin adds support for UIMA Ruta in IntelliJ.
 
 #License 
+
 See ./LICENSE 
 ## Based on
 There is an ANTLR4-to-Idea adaptor and a sample usage project.
@@ -33,6 +34,8 @@ the downloaded files are moved to a different package, to coexist happily with t
 1. Get a syntax analyzer working
     * Get parser to build - {done} 
     * Get the IDEA PSI framework to play nice  -{WIP for error handling} 
+    * Get state recovery working for lexer
+    * Get state recovery working for parser (fingers crossed)
     * Error handling messages
     * Highlighting
     * Code Renames

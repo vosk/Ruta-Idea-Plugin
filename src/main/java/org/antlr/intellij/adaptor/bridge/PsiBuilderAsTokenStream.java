@@ -104,15 +104,11 @@ public class PsiBuilderAsTokenStream implements TokenStream {
     public int mark() {
         markStack.push(markStack.peek());//New Stack
         return markStack.size();
-//        throw new UnsupportedOperationException("psibuilder");
-//        return 0;
     }
 
     @Override
     public int index() {
         return markStack.peek();
-//        throw new UnsupportedOperationException("psibuilder");
-//        return 0;
     }
 
     @Override
@@ -120,7 +116,6 @@ public class PsiBuilderAsTokenStream implements TokenStream {
         while(markStack.size()>=marker){
             markStack.pop();
         }
-//        throw new UnsupportedOperationException("psibuilder");
     }
 
     @Override
@@ -145,7 +140,6 @@ public class PsiBuilderAsTokenStream implements TokenStream {
     @Override
     public int size() {
         throw new UnsupportedOperationException("psibuilder");
-//        return 0;
     }
 
     @Override

@@ -67,6 +67,7 @@ public class IdentifierPSINode extends ANTLRPsiLeafNode implements PsiNamedEleme
 		System.out.println("IdentifierPSINode.setName("+name+") on "+
 			                   kind+this+" at "+Integer.toHexString(this.hashCode()));
 		*/
+		//TODO this doesnt work
 		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).get(RutaParser.Identifier);
 		PsiElement newID = Trees.createLeafFromText(getProject(),
 		                                            RutaLanguage.INSTANCE,
