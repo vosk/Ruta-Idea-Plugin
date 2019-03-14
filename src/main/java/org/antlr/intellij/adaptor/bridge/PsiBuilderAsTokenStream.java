@@ -29,15 +29,17 @@ public class PsiBuilderAsTokenStream implements TokenStream {
     @Override
     public Token LT(int k) {
         Token t=null;
-        int idx=0;
-        for(int i=0;i<k;i++){
-            do {
-                t=lookAhead(markStack.peek()+idx);
-                idx++;
-            }
-            while(t.getChannel()!=Token.DEFAULT_CHANNEL);
+//        int idx=0;
+        t=lookAhead(markStack.peek()+k);
 
-        }
+//        for(int i=0;i<k;i++){
+//            do {
+//                t=lookAhead(markStack.peek()+idx);
+//                idx++;
+//            }
+//            while(t.getChannel()!=Token.DEFAULT_CHANNEL);
+//
+//        }
 
         return t;
     }
@@ -155,7 +157,8 @@ public class PsiBuilderAsTokenStream implements TokenStream {
         int type = ideaTType!=null ? ideaTType.getANTLRTokenType() : Token.EOF;
 
         int channel =ideaTType!= null ? ideaTType.getChannel():Token.DEFAULT_CHANNEL;
-        String text =  ideaTType != null ? ideaTType.toString(): "";
+        //String text =  ideaTType != null ? ideaTType.toString(): "";
+        String text =  builder.getTokenText();
 
         int start = 0;
 
