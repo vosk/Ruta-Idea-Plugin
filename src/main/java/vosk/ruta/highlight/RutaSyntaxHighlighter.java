@@ -19,9 +19,14 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 public class RutaSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey SEMI =
             createTextAttributesKey("SEMI", DefaultLanguageHighlighterColors.SEMICOLON);
+
+    public static final TextAttributesKey BLOCK_COMMENT =
+            createTextAttributesKey("BLOCK_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey COMMENT =
+            createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+
     public static final TextAttributesKey BRACKETS =
             createTextAttributesKey("BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
-
     public static final TextAttributesKey DOT =
             createTextAttributesKey("DOT", DefaultLanguageHighlighterColors.DOT);
     public static final TextAttributesKey IDENTIFIER =
@@ -30,9 +35,9 @@ public class RutaSyntaxHighlighter extends SyntaxHighlighterBase {
             createTextAttributesKey("KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey STRING =
             createTextAttributesKey("STRING", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey ARROW =
+            createTextAttributesKey("ARROW", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 
-    public static final TextAttributesKey COMMENT =
-            createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey BAD_CHARACTER =
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 //
@@ -43,7 +48,9 @@ public class RutaSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{DOT};
     private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING};
-//    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] ARROW_KEYS = new TextAttributesKey[]{ARROW};
+    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] BLOCKCOMMENT_KEYS = new TextAttributesKey[]{BLOCK_COMMENT};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
     @NotNull
@@ -76,6 +83,15 @@ public class RutaSyntaxHighlighter extends SyntaxHighlighterBase {
             case RutaLexer.LBRACK:
             case RutaLexer.RBRACK:
                 return BRACKET_KEYS;
+            case RutaLexer.THEN:
+            case RutaLexer.THEN2:
+                return ARROW_KEYS;
+            case RutaLexer.LINE_COMMENT:
+                return COMMENT_KEYS;
+            case RutaLexer.COMMENT:
+            case RutaLexer.DocComment:
+                return BLOCKCOMMENT_KEYS;
+
             default:
                 return KW_KEYS;
 
