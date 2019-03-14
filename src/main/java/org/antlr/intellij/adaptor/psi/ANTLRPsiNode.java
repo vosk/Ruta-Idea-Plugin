@@ -4,8 +4,9 @@ package org.antlr.intellij.adaptor.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import org.antlr.intellij.adaptor.parser.RuleIElementType;
+import com.intellij.psi.PsiFile;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
+import org.antlr.intellij.adaptor.parser.RuleIElementType;
 import org.jetbrains.annotations.NotNull;
 
 /** This class represents an internal, non-leaf "composite" PSI
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  *  snippets of code. In that case, Intellij calls
  *  ParserDefinition.createElement() with a TokenIElementType (usually
  *  identifier) as the root of the generated PSI tree. So, when
- *  looking for an ID, you might get a tree like (ID (expr (primary
+ *  looking for an ID, you might getRule a tree like (ID (expr (primary
  *  ID))). Weird but whatever. The root ID is an ANTLRPsiNode and the
  *  leaf ID is an ANTLRPsiLeafNode.
  *
@@ -33,35 +34,34 @@ public class ANTLRPsiNode extends ASTWrapperPsiElement {
         super(node);
     }
 
-    /** For some reason, default impl of this only returns rule refs
-     *  (composite nodes in jetbrains speak) but we want ALL children.
-     *  Well, we don't want hidden channel stuff.
-     */
-    @Override
-    @NotNull
-    public PsiElement[] getChildren() { return Trees.getChildren(this); }
-
-    /** For this internal PSI node, look upward for our enclosing scope.
-     *  Start looking for a scope at our parent node so getContext()
-     *  returns the enclosing scope (context) when this is a ScopeNode.
-     *
-     *  From the return to scope node, you typically look for a declaration
-     *  by looking at its children.
-     */
+//    /** For some reason, default impl of this only returns rule refs
+//     *  (composite nodes in jetbrains speak) but we want ALL children.
+//     *  Well, we don't want hidden channel stuff.
+//     */
 //    @Override
-//    public ScopeNode getContext() {
-//        return getContextFor(this);
-//    }
-
+//    @NotNull
+//    public PsiElement[] getChildren() { return Trees.getChildren(this); }
 //
-//    public static ScopeNode getContextFor(PsiElement element) {
-//        PsiElement parent = element.getParent();
-//        if ( parent instanceof ScopeNode ) {
-//            return (ScopeNode)parent;
+//    /** For this internal PSI node, look upward for our enclosing scope.
+//     *  Start looking for a scope at our parent node so getContext()
+//     *  returns the enclosing scope (context) when this is a ScopeNode.
+//     *
+//     *  From the return to scope node, you typically look for a declaration
+//     *  by looking at its children.
+//     */
+    @Override
+    public PsiElement getContext() {
+        if (getParent() != null && !(getParent() instanceof PsiFile))
+            return getParent().getContext();
+        return this;
+    }
+//
+////
+//    public static PsiElement getContextFor(PsiElement element) {
+//        PsiElement parent = element;
+//        while(parent.getParent()!=null&&!(parent instanceof PsiFile)){
+//            parent=parent.getParent();
 //        }
-//        if ( parent instanceof PsiErrorElement) {
-//            return null;
-//        }
-//        return (ScopeNode)parent.getContext();
+//        return parent;
 //    }
 }

@@ -2,17 +2,15 @@ package vosk.ruta.psi;
 
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.antlr.intellij.adaptor.psi.ANTLRPsiLeafNode;
-import org.antlr.intellij.adaptor.psi.PsiElementFactory;
-import org.antlr.intellij.adaptor.psi.Trees;
-import org.apache.uima.ruta.parser.debug.RutaParser;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import vosk.ruta.RutaLanguage;
+import org.jetbrains.annotations.Nullable;
+import vosk.ruta.RutaParserLogic;
 
 /** From doc: "Every element which can be renamed or referenced
  *             needs to implement com.intellij.psi.PsiNamedElement interface."
@@ -32,7 +30,7 @@ import vosk.ruta.RutaLanguage;
  *  You can click on an ID in the editor and ask for a rename for any node
  *  of this type.
  */
-public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNamedElement {
+public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdentifierOwner {
 	public IdentifierPsiNode(IElementType type, CharSequence text) {
 		super(type, text);
 	}
@@ -68,17 +66,18 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNamedEleme
 			                   kind+this+" at "+Integer.toHexString(this.hashCode()));
 		*/
 		//TODO this doesnt work
-		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).get(RutaParser.Identifier);
-//		RutaASTFactory.
-		PsiElement newID = Trees.createLeafFromText(getProject(),
-		                                            RutaLanguage.INSTANCE,
-		                                            getContext(),
-		                                            name,
-													type);
+//		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).getRule(RutaParser.Identifier);
+////		RutaASTFactory.
+//		PsiElement newID = Trees.createLeafFromText(getProject(),
+//		                                            RutaLanguage.INSTANCE,
+//		                                            getContext(),
+//		                                            name,
+//													type);
 //		if ( newID!=null ) {
-			return this.replace(newID); // use replace on leaves but replaceChild on ID nodes that are part of defs/decls.
+//			return this.replace(newID); // use replace on leaves but replaceChild on ID nodes that are part of defs/decls.
 //		}
 //		return this;
+		return null;
 	}
 
 	/** Create and return a PsiReference object associated with this ID
@@ -104,11 +103,31 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNamedEleme
 //				case RULE_statement :
 //				case RULE_expr :
 //				case RULE_primary :
-//					return new VariableRef(this);
+//					return new VariableReference(this);
 //				case RULE_call_expr :
 //					return new FunctionRef(this);
 //			}
 //		}
-		return null;
+		PsiElement parent = getParent();
+		while(parent!=null){
+			if(RutaParserLogic.isSomekindOfDefinition(parent))
+				return null;
+			parent=parent.getParent();
+		}
+		return new VariableReference(this);
 	}
+
+	@Nullable
+	@Override
+	public PsiElement getNameIdentifier() {
+		return this;
+//		return Arrays.asList(this.getChildren())
+//				.stream()
+//				.filter(element-> element instanceof  IdentifierPsiNode)
+//				.findFirst()
+//				.orElse(null);
+	}
+	@Override
+	public int getTextOffset(){ return this.getNode().getStartOffset();};
+
 }

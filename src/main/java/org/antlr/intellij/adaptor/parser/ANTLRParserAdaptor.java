@@ -20,15 +20,17 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ANTLRParserAdaptor implements PsiParser {
     protected final Language language;
     protected final DebugParser parser;
+    private ContextPsiElementFactory factory;
 
     /**
      * Create a jetbrains adaptor for an ANTLR parser object. When
      * the IDE requests a {@link #parse(IElementType, PsiBuilder)},
      * the token stream will be set on the parser.
      */
-    public ANTLRParserAdaptor(Language language, DebugParser parser) {
+    public ANTLRParserAdaptor(Language language, DebugParser parser,ContextPsiElementFactory factory) {
         this.language = language;
         this.parser = parser;
+        this.factory = factory;
     }
 
 
@@ -44,7 +46,7 @@ public abstract class ANTLRParserAdaptor implements PsiParser {
 
 //        TokenSource source = new PsiBuilderAsTokenSource(builder);
         TokenStream stream = new PsiBuilderAsTokenStream(builder);
-        ANTLRPsiBuilderDebugListener parserListener = new ANTLRPsiBuilderDebugListener(language, builder);
+        ANTLRPsiBuilderDebugListener parserListener = new ANTLRPsiBuilderDebugListener(language, builder,factory);
         TokenStream tokens = stream;
 //        TokenStream tokens = new DebugTokenStream(new CommonTokenStream(source),parserListener);
 

@@ -1,6 +1,8 @@
 package org.antlr.intellij.adaptor.psi;
 
 
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -17,13 +19,26 @@ public class ANTLRPsiLeafNode extends LeafPsiElement {
         super(type, text);
     }
 
-    /** We're a leaf node so must start looking at parent node for a scope.
-     *  This assumes a reasonable getContext() implementation for your
-     *  internal, non-leaf PSI nodes. It's easiest to use {@link ANTLRPsiNode}
-     *  subclasses for your internal notes.
+    /**
+     * We're a leaf node so must start looking at parent node for a scope.
+     * This assumes a reasonable getContext() implementation for your
+     * internal, non-leaf PSI nodes. It's easiest to use {@link ANTLRPsiNode}
+     * subclasses for your internal notes.
      */
-//    @Override
-//    public PsiElement getContext() {
-//        return SymtabUtils.getContextFor(this);
-//    }
+    @Override
+    public PsiElement getContext() {
+        if (getParent() != null && !(getParent() instanceof PsiFile))
+            return getParent().getContext();
+        return this;
+    }
 }
+    //
+//
+//    public static PsiElement getContextFor(PsiElement element) {
+//        PsiElement parent = element;
+//        while(parent.getParent()!=null&&!(parent instanceof PsiFile)){
+//            parent=parent.getParent();
+//        }
+//        return parent;
+//    }
+//}

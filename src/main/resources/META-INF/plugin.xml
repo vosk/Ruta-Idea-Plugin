@@ -21,6 +21,11 @@
         <lang.ast.factory language="Ruta" implementationClass="vosk.ruta.RutaASTFactory"/>
 
 
+        <spellchecker.support language="Ruta"
+                              implementationClass="vosk.ruta.spellcheck.RutaSpellcheckingStrategy"/>
+        <lang.refactoringSupport language="Ruta"
+                                 implementationClass="vosk.ruta.refactoring.RutaRefactoringSupportProvider"/>
+
         <!-- Add your extensions here -->
     </extensions>
 

@@ -16,17 +16,24 @@ import org.jetbrains.annotations.Nullable;
  *  {@link RuleIElementType} and {@link TokenIElementType}.
  */
 public class RuleIElementType extends IElementType {
-    private final int ruleIndex;
+    private final String ruleName;
+    private final boolean isOwner;
 
-    public RuleIElementType(int ruleIndex,
+    public RuleIElementType(String ruleName,
+                            boolean isOwner,
                             @NotNull @NonNls String debugName,
                             @Nullable Language language)
     {
         super(debugName, language);
-        this.ruleIndex = ruleIndex;
+        this.ruleName = ruleName;
+        this.isOwner = isOwner;
     }
 
-    public int getRuleIndex() {
-        return ruleIndex;
+    public String getRuleName() {
+        return ruleName;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
     }
 }

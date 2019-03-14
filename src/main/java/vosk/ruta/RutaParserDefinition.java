@@ -17,7 +17,8 @@ import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.antlr.intellij.adaptor.parser.ANTLRParserAdaptor;
 import org.antlr.intellij.adaptor.parser.RuleIElementType;
 import org.antlr.intellij.adaptor.psi.ANTLRPsiNode;
-import org.antlr.intellij.adaptor.tokens.TokenLoader;
+import org.antlr.intellij.adaptor.psi.PsiElementFactory;
+import org.antlr.intellij.adaptor.psi.PsiLanguageElementFactory;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenSource;
@@ -34,19 +35,17 @@ import org.apache.uima.ruta.extensions.RutaExternalFactory;
 import org.apache.uima.ruta.parser.debug.RutaLexer;
 import org.apache.uima.ruta.parser.debug.RutaParser;
 import org.jetbrains.annotations.NotNull;
+import vosk.ruta.psi.RutaContextPsiElementFactory;
 import vosk.ruta.psi.RutaFile;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RutaParserDefinition implements ParserDefinition {
     public static final IFileElementType FILE =
             new IFileElementType(RutaLanguage.INSTANCE);
-    public static TokenLoader loader = null;
+//    public static TokenLoader loader = null;
 
     public static TokenIElementType ID;
+    public final RutaContextPsiElementFactory contextPsiElementFactory = new RutaContextPsiElementFactory();
+    public final static PsiLanguageElementFactory elementfactory = PsiElementFactory.get(RutaLanguage.INSTANCE);
 
     static {
 
@@ -56,43 +55,43 @@ public class RutaParserDefinition implements ParserDefinition {
 //                RutaLanguageParser.ruleNames);
 //        List<TokenIElementType> tokenIElementTypes =
 //                PSIElementTypeFactory.getTokenIElementTypes(RutaLanguage.INSTANCE);
-//        ID = tokenIElementTypes.get(RutaLanguageLexer.ID);
+//        ID = tokenIElementTypes.getRule(RutaLanguageLexer.ID);
     }
 
     public RutaParserDefinition() {
-        if (loader == null) {
-            Field[] declaredFields = RutaLexer.class.getDeclaredFields();
-            List<Field> staticFields;
-            staticFields= Arrays.asList(declaredFields).stream()
-                    .filter(f-> java.lang.reflect.Modifier.isStatic(f.getModifiers()))
-                    .filter(f->java.lang.reflect.Modifier.isFinal(f.getModifiers()))
-                    .filter(f -> f.getType()==Integer.TYPE)
-                    .collect(Collectors.toList());
-
-            List<Integer> tokenIds;
-
-            tokenIds = staticFields.stream().map(f -> {
-                try {
-                    return f.getInt(null);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                return Integer.MIN_VALUE;
-            })
-                    .collect(Collectors.toList());
-
-
-            loader = new TokenLoader();
-            try {
-
-                loader.load(RutaLanguage.INSTANCE,
-                        this.getClass().getResourceAsStream("/ruta/antlr/RutaParser.tokens"),
-                        (Map.Entry<Integer, String> entry) -> tokenIds.contains(entry.getKey())
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (loader == null) {
+//            Field[] declaredFields = RutaLexer.class.getDeclaredFields();
+//            List<Field> staticFields;
+//            staticFields= Arrays.asList(declaredFields).stream()
+//                    .filter(f-> java.lang.reflect.Modifier.isStatic(f.getModifiers()))
+//                    .filter(f->java.lang.reflect.Modifier.isFinal(f.getModifiers()))
+//                    .filter(f -> f.getType()==Integer.TYPE)
+//                    .collect(Collectors.toList());
+//
+//            List<Integer> tokenIds;
+//
+//            tokenIds = staticFields.stream().map(f -> {
+//                try {
+//                    return f.getInt(null);
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//                return Integer.MIN_VALUE;
+//            })
+//                    .collect(Collectors.toList());
+//
+//
+//            loader = new TokenLoader();
+//            try {
+//
+//                loader.load(RutaLanguage.INSTANCE,
+//                        this.getClass().getResourceAsStream("/ruta/antlr/RutaParser.tokens"),
+//                        (Map.Entry<Integer, String> entry) -> tokenIds.contains(entry.getKey())
+//                );
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
     }
 //TODO
@@ -115,7 +114,7 @@ public class RutaParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        RutaLexer lexer = new RutaLexer(null);
+        RutaLexerWithState lexer = new RutaLexerWithState(null);
         return new ANTLRLexerAdaptor(RutaLanguage.INSTANCE, lexer);
     }
 
@@ -129,7 +128,7 @@ public class RutaParserDefinition implements ParserDefinition {
             e.printStackTrace();
             return null;
         }
-        return new ANTLRParserAdaptor(RutaLanguage.INSTANCE, parser) {
+        return new ANTLRParserAdaptor(RutaLanguage.INSTANCE, parser, contextPsiElementFactory) {
             @Override
             protected void parse(DebugParser parser, IElementType root) throws RecognitionException {
                 RutaParserLogic.parse((RutaParser) parser, root);
@@ -145,7 +144,7 @@ public class RutaParserDefinition implements ParserDefinition {
     }
 
     public static RutaParser getBlankRutaParser() throws ResourceInitializationException {
-        RutaParser parser = new RutaRamboParser(new TokenStream() {
+        RutaParser parser = new DebuggedRutaParser(new TokenStream() { //TODO dummy need or NullPointer
             @Override
             public Token LT(int k) {
                 return null;
@@ -227,6 +226,7 @@ public class RutaParserDefinition implements ParserDefinition {
             }
         }, null);
 
+        //TODO do I really need these here? maybe for live-preview in the future
         TypeUsageInformation typeUsageInformation = new TypeUsageInformation();
         ActionFactory actionFactory = new ActionFactory(typeUsageInformation);
         ConditionFactory conditionFactory = new ConditionFactory(typeUsageInformation);
@@ -252,17 +252,23 @@ public class RutaParserDefinition implements ParserDefinition {
      */
     @NotNull
     public TokenSet getWhitespaceTokens() {
-        return TokenSet.EMPTY; //TODO
+        return TokenSet.create(elementfactory.getOrRegisterAsToken(RutaLexer.WS,Token.HIDDEN_CHANNEL));
     }
 
     @NotNull
     public TokenSet getCommentTokens() {
-        return TokenSet.EMPTY;
+        return TokenSet.create(
+                elementfactory.getOrRegisterAsToken(RutaLexer.COMMENT,Token.HIDDEN_CHANNEL),
+                elementfactory.getOrRegisterAsToken(RutaLexer.LINE_COMMENT,Token.HIDDEN_CHANNEL),
+                elementfactory.getOrRegisterAsToken(RutaLexer.DocComment,Token.HIDDEN_CHANNEL)
+                );
     }
 
     @NotNull
     public TokenSet getStringLiteralElements() {
-        return TokenSet.EMPTY;
+        return TokenSet.create(
+                elementfactory.getOrRegisterAsToken(RutaLexer.StringLiteral,Token.HIDDEN_CHANNEL)
+        );
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
@@ -287,7 +293,7 @@ public class RutaParserDefinition implements ParserDefinition {
      * in a particular programming language."
      * <p>
      * PsiFile is to be distinguished from a FileASTNode, which is a parse
-     * tree node that eventually becomes a PsiFile. From PsiFile, we can get
+     * tree node that eventually becomes a PsiFile. From PsiFile, we can getRule
      * it back via: {@link PsiFile#getNode}.
      */
     @Override

@@ -4,15 +4,16 @@ import com.intellij.lang.Language;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import javassist.compiler.SyntaxError;
-import org.antlr.intellij.adaptor.psi.PsiElementFactory;
-import org.antlr.intellij.adaptor.psi.PsiLanguageElementFactory;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.debug.BlankDebugEventListener;
 import org.apache.uima.ruta.extensions.RutaParseRuntimeException;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 /** This is how we build an intellij PSI tree from an ANTLR parse tree.
  *  We let the ANTLR parser build its kind of ParseTree and then
@@ -24,9 +25,10 @@ import java.util.*;
 public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
     protected final Language language;
     protected final PsiBuilder builder;
-    protected final PsiLanguageElementFactory factory;
+    protected final ContextPsiElementFactory factory;
     protected final Deque<PsiBuilder.Marker> markers = new ArrayDeque<PsiBuilder.Marker>();
     private Deque<Exception> errorStack= new ArrayDeque<>();
+    private Deque<String> callStack = new ArrayDeque<>();
 
 
 //TODO
@@ -36,26 +38,10 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
     /** Map an error's start char index (usually start of a token) to the error object. */
     protected Map<Integer, SyntaxError> tokenToErrorMap = new HashMap<>();
 
-    public ANTLRPsiBuilderDebugListener(Language language, PsiBuilder builder) {
+    public ANTLRPsiBuilderDebugListener(Language language, PsiBuilder builder, ContextPsiElementFactory factory) {
         this.language = language;
         this.builder = builder;
-        this.factory = PsiElementFactory.get(language);
-
-//        this.tokenElementTypes = PSIElementTypeFactory.getTokenIElementTypes(language);
-//        this.ruleElementTypes = PSIElementTypeFactory.getRuleIElementTypes(language);
-//
-//        for (ANTLRErrorListener listener : parser.getErrorListeners()) {
-//            if (listener instanceof SyntaxErrorListener) {
-//                syntaxErrors = ((SyntaxErrorListener)listener).getSyntaxErrors();
-//                for (SyntaxError error : syntaxErrors) {
-//                    // record first error per token
-//                    int StartIndex = error.getOffendingSymbol().getStartIndex();
-//                    if ( !tokenToErrorMap.containsKey(StartIndex) ) {
-//                        tokenToErrorMap.put(StartIndex, error);
-//                    }
-//                }
-//            }
-//        }
+        this.factory = factory;
     }
 
     protected final Language getLanguage() {
@@ -112,6 +98,7 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
     @Override
     public void enterRule(String grammarFileName, String ruleName){
 
+        callStack.push(ruleName);
         System.out.println("enter"+ruleName+markers.size());
         ProgressIndicatorProvider.checkCanceled();
         markers.push(getBuilder().mark());
@@ -121,12 +108,13 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
         System.out.println("exit"+ruleName+markers.size());
         ProgressIndicatorProvider.checkCanceled();
         PsiBuilder.Marker marker = markers.pop();
+
         if(errorStack.isEmpty()){
-            marker.done(factory.getOrRegisterAsRule(ruleName));
+            marker.done(factory.getRuleIElementFor(callStack));
             //marker.done(new RuleIElementType(1,ruleName,language));
         }else {
 
-            marker.error(errorStack.pop().toString());
+            marker.error(callStack.pop());//factory.getErrorStringFor(callStack,errorStack));
         }
 
     }
@@ -172,7 +160,7 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
 //        Token badToken = node.getSymbol();
 //        boolean isConjuredToken = badToken.getTokenIndex()<0;
 //        int nodeStartIndex = badToken.getStartIndex();
-//        SyntaxError error = tokenToErrorMap.get(nodeStartIndex);
+//        SyntaxError error = tokenToErrorMap.getRule(nodeStartIndex);
 //
 //        if ( error!=null ) {
 //            PsiBuilder.Marker errorMarker = builder.mark();
@@ -212,6 +200,6 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
 //    public void exitEveryRule(ParserRuleContext ctx) {
 //        ProgressIndicatorProvider.checkCanceled();
 //        PsiBuilder.Marker marker = markers.pop();
-//        marker.done(getRuleElementTypes().get(ctx.getRuleIndex()));
+//        marker.done(getRuleElementTypes().getRule(ctx.getRuleIndex()));
 //    }
 }

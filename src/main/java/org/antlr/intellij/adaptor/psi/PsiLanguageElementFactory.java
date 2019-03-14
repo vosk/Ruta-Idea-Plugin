@@ -1,71 +1,90 @@
 package org.antlr.intellij.adaptor.psi;
 
 import com.intellij.lang.Language;
-import com.intellij.psi.tree.IElementType;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.antlr.intellij.adaptor.parser.RuleIElementType;
-import org.antlr.runtime.Token;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class PsiLanguageElementFactory {
     private final Language language;
-    private final Map<Integer, String> tokenIndexToString = new ConcurrentHashMap<>();
-    private final Map<String, Integer> tokenStringToIndex = new ConcurrentHashMap<>();
-    private final Map<Integer, IElementType> tokenElementFromString = new ConcurrentHashMap<>();
+//    private final Map<Integer, String> ruleIndexToString = new ConcurrentHashMap<>();
+//    private final Map<String, Integer> ruleStringToIndex = new ConcurrentHashMap<>();
+    private final Map<String, RuleIElementType> ruleElements = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<Integer, TokenIElementType>> tokens = new ConcurrentHashMap<>();
 
     public PsiLanguageElementFactory(Language language) {
         this.language = language;
     }
 
-    public synchronized void register(Map<String, Integer> map, Predicate<Map.Entry<Integer,String>> isLeaf) {
-        Map<Integer, String> mapInverted =
-                map.entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        tokenStringToIndex.putAll(map);
-        tokenIndexToString.putAll(mapInverted);
-        mapInverted.entrySet()
-                .stream()
-                .forEach(entry ->{
-                    IElementType type;
-                    if(isLeaf.test(entry)){
-                        type = new TokenIElementType(entry.getKey(), Token.DEFAULT_CHANNEL,entry.getValue(),language);
-                    } else {
-                        type = new RuleIElementType(entry.getKey(),entry.getValue(),language);
-                    }
-                    tokenElementFromString.put(entry.getKey(),type);
+//    public synchronized void register(Map<String, Integer> map, Predicate<Map.Entry<Integer, String>> isLeaf) {
+//        Map<Integer, String> mapInverted =
+//                map.entrySet()
+//                        .stream()
+//                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+//        ruleStringToIndex.putAll(map);
+//        ruleIndexToString.putAll(mapInverted);
+//        mapInverted.entrySet()
+//                .stream()
+//                .filter(isLeaf.negate())
+//                .forEach(entry -> {
+//                    RuleIElementType type;
+//                    type = new RuleIElementType(entry.getKey(), entry.getValue(), language);
+//                    ruleElements.put(entry.getKey(), type);
+//                });
+//    }
 
-                });
+
+    public RuleIElementType getRule(String name) {
+        return ruleElements.get(name);
     }
 
-    public IElementType get(String name) {
-        Integer index = tokenStringToIndex.get(name);
-        if(index ==null){
-            return null;
-        }
-        return tokenElementFromString.get(index);
-    }
-
-    public IElementType getOrRegisterAsRule(String name) {
-        IElementType exists= get(name);
-        if(exists != null){
+    public RuleIElementType getOrRegisterAsRule(String name,boolean owner) {
+        RuleIElementType exists = getRule(name);
+        if (exists != null) {
             return exists;
         }
-        Integer maxInt = tokenIndexToString.keySet().stream().reduce(Integer::max).orElse(1);
-        maxInt++;
-        Map<String, Integer>data = new HashMap();
-        data.put(name,maxInt);
-        register(data,str->false);
-        return get(name);
+        ruleElements.put(name, new RuleIElementType(name,owner,name,language));
+        return getRule(name);
     }
 
-    public IElementType get(int index) {
-        return tokenElementFromString.get(index);
+
+    public TokenIElementType getToken(int antlrToken, int channel) {
+        Map<Integer, TokenIElementType> t = tokens.get(antlrToken);
+        if (t != null) {
+            return t.get(channel);
+
+        }
+        return null;
     }
+
+    public TokenIElementType getOrRegisterAsToken(int antlrToken, int channel) {
+        TokenIElementType got = getToken(antlrToken, channel);
+        if (got != null) {
+            return got;
+        }
+        if (!tokens.containsKey(antlrToken)) {
+            tokens.put(antlrToken, new ConcurrentHashMap<>());
+        }
+//        if(!tokens.get(antlrToken).containsKey(channel)){
+//            tokens.get(antlrToken).get(
+//        }
+        tokens.get(antlrToken).put(channel, new TokenIElementType(antlrToken,
+                channel,
+               String.valueOf(antlrToken),
+                language)
+        );
+        return getToken(antlrToken, channel);
+    }
+
+//    public IElementType getOrRegisterAsRuleOwner(String name) {
+//        RuleIElementType exists = getRule(name);
+//        if (exists != null) {
+//            return exists;
+//        }
+//        ruleElements.put(name, new RuleIElementType(name,name,language));
+//        return getRule(name);
+//    }
 }
 

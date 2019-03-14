@@ -2,6 +2,8 @@ package org.antlr.intellij.adaptor.lexer;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.intellij.adaptor.psi.PsiElementFactory;
+import org.antlr.intellij.adaptor.psi.PsiLanguageElementFactory;
 import org.antlr.runtime.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,38 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the adaptor class for implementations of {@link
- * com.intellij.lexer.Lexer} backed by an ANTLR 4 lexer. It supports
- * any ANTLR 4 lexer that does not store extra information for use in
- * custom actions. For lexers that do not store custom state information, this
- * default implementation is sufficient. Otherwise, subclass and override:
- * {#getInitialState} and {#getLexerState}.
- * <p>
- * Intellij lexers need to track state as they must be able to
- * restart lexing in the middle of the input buffer. From
- * <a href="http://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/implementing_lexer.html">Intellij doc</a>:
- * <p>
- * "A lexer that can be used incrementally may need to return its
- * state, which means the context corresponding to each position in a
- * file. For example, a Java lexer could have separate states for top
- * level context, comment context and string literal context. An
- * important requirement for a syntax highlighting lexer is that its
- * state must be represented by a single integer number returned from
- * Lexer.getState(). That state will be passed to the Lexer.start()
- * method, along with the start offset of the fragment to process,
- * when lexing is resumed from the middle of a file."
- * <p>
- * This implementation supports single- as well as multi-mode lexers.
  *
- * @author Sam Harwell
+ * @author Sam Harwell, Manos Orfanoudakis
+ *
  */
-public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
-    /**
-     * Gets the {@link Language} supported by this lexer. This
-     * value is passed to {@link PSIElementFactory} to ensure the
-     * correct collection of {@link IElementType} is used for
-     * assigning element types to tokens in {@link #getTokenType}.
-     */
+public class ANTLRLexerAdaptor<T extends Lexer & StateRecoverableLexer> extends com.intellij.lexer.LexerBase {
+
     private final Language language;
 
     /**
@@ -55,7 +31,8 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
     /**
      * This is the backing field for {@link #getLexer()}.
      */
-    private final Lexer lexer;
+    private final T lexer;
+    private final PsiLanguageElementFactory elementFactory;
 
     /**
      * Provides a map from a {@code State} object &rarr; state
@@ -124,10 +101,11 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
      * @param language The language.
      * @param lexer    The underlying ANTLR lexer.
      */
-    public ANTLRLexerAdaptor(Language language, Lexer lexer) {
+    public ANTLRLexerAdaptor(Language language, T lexer) {
         this.language = language;
 //TODO        this.tokenElementTypes = createTokenIElementTypes(language,lexer.getTokenNames());
         this.lexer = lexer;
+        elementFactory = PsiElementFactory.get(language);
     }
 
     /**
@@ -154,7 +132,7 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
     public void start(CharSequence buffer, int startOffset, int endOffset, int initialState) {
         this.buffer = buffer;
         this.endOffset = endOffset;
-        ANTLRStringStream in = new ANTLRStringStream(buffer.subSequence(startOffset,endOffset).toString());
+        ANTLRStringStream in = new ANTLRStringStream(buffer.subSequence(0,endOffset).toString());
 
 //        CharStream in = new CharSequenceCharStream(buffer, endOffset, IntStream.UNKNOWN_SOURCE_NAME);
         in.seek(startOffset);
@@ -183,12 +161,14 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
             // return null when lexing is finished
             return null;
         }
+        TokenIElementType result = elementFactory.getOrRegisterAsToken(antlrTokenType, channel);
+        return result;
+
 //        if(channel==Token.HIDDEN_CHANNEL){
 //            return TokenType.WHITE_SPACE;
 //        }
-        return new TokenIElementType(antlrTokenType,channel,lexer.getText(),language);
+//        return new TokenIElementType(antlrTokenType,channel,lexer.getText(),language);
 
-//TODO        return tokenElementTypes.get(antlrTokenType);
     }
 
     @Override
@@ -200,7 +180,7 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
     @Override
     public int getState() {
 //TODO        ANTLRLexerState state = currentState != null ? currentState : getInitialState();
-//        Integer existing = stateCacheMap.get(state);
+//        Integer existing = stateCacheMap.getRule(state);
 //        if (existing == null) {
 //            existing = stateCache.size();
 //            stateCache.add(state);
@@ -244,8 +224,9 @@ public class ANTLRLexerAdaptor extends com.intellij.lexer.LexerBase {
      * @param input The new input stream for the lexer.
      * @param state A {@code ANTLRLexerState} instance containing the starting state for the lexer.
      */
-    protected void applyLexerState(CharStream input, ANTLRLexerState state) {
+    protected void applyLexerState(CharStream input, RecognizerSharedState state) {
         lexer.setCharStream(input);
+//        lexer.setState(state);
 
         //TODO state.apply(lexer);
     }

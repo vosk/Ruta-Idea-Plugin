@@ -36,26 +36,15 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiFileFactoryImpl;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import org.antlr.intellij.adaptor.parser.RuleIElementType;
-import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Trees {
     public interface Predicate<T> {
@@ -108,45 +97,45 @@ public class Trees {
         return m;
     }
 
-    public static Collection<PsiElement> findAllTokenNodes(PsiElement t, int ttype) {
-        return findAllNodes(t, ttype, true);
-    }
+//    public static Collection<PsiElement> findAllTokenNodes(PsiElement t, int ttype) {
+//        return findAllNodes(t, ttype, true);
+//    }
+//
+//    public static Collection<PsiElement> findAllRuleNodes(PsiElement t, int ruleIndex) {
+//        return findAllNodes(t, ruleIndex, false);
+//    }
 
-    public static Collection<PsiElement> findAllRuleNodes(PsiElement t, int ruleIndex) {
-        return findAllNodes(t, ruleIndex, false);
-    }
+//    public static List<PsiElement> findAllNodes(PsiElement t, int index, boolean findTokens) {
+//        List<PsiElement> nodes = new ArrayList<>();
+//        _findAllNodes(t, index, findTokens, nodes);
+//        return nodes;
+//    }
 
-    public static List<PsiElement> findAllNodes(PsiElement t, int index, boolean findTokens) {
-        List<PsiElement> nodes = new ArrayList<>();
-        _findAllNodes(t, index, findTokens, nodes);
-        return nodes;
-    }
-
-    public static void _findAllNodes(PsiElement t, int index, boolean findTokens,
-                                     List<? super PsiElement> nodes)
-    {
-        // check this node (the root) first
-        if ( findTokens && t instanceof LeafPsiElement ) {
-            LeafPsiElement tnode = (LeafPsiElement)t;
-            IElementType elType = tnode.getNode().getElementType();
-            if ( elType instanceof TokenIElementType) {
-                if ( ((TokenIElementType) elType).getANTLRTokenType()==index ) {
-                    nodes.add(t);
-                }
-            }
-        }
-        else if ( !findTokens && t instanceof ANTLRPsiNode ) {
-            ANTLRPsiNode ctx = (ANTLRPsiNode)t;
-            IElementType elType = ctx.getNode().getElementType();
-            if ( elType instanceof RuleIElementType) {
-                if ( ((RuleIElementType) elType).getRuleIndex()==index ) nodes.add(t);
-            }
-        }
-        // check children
-        for (PsiElement c : t.getChildren()) {
-            _findAllNodes(c, index, findTokens, nodes);
-        }
-    }
+//    public static void _findAllNodes(PsiElement t, int index, boolean findTokens,
+//                                     List<? super PsiElement> nodes)
+//    {
+//        // check this node (the root) first
+//        if ( findTokens && t instanceof LeafPsiElement ) {
+//            LeafPsiElement tnode = (LeafPsiElement)t;
+//            IElementType elType = tnode.getNode().getElementType();
+//            if ( elType instanceof TokenIElementType) {
+//                if ( ((TokenIElementType) elType).getANTLRTokenType()==index ) {
+//                    nodes.add(t);
+//                }
+//            }
+//        }
+//        else if ( !findTokens && t instanceof ANTLRPsiNode ) {
+//            ANTLRPsiNode ctx = (ANTLRPsiNode)t;
+//            IElementType elType = ctx.getNode().getElementType();
+//            if ( elType instanceof RuleIElementType) {
+//                if ( ((RuleIElementType) elType).getRuleIndex()==index ) nodes.add(t);
+//            }
+//        }
+//        // check children
+//        for (PsiElement c : t.getChildren()) {
+//            _findAllNodes(c, index, findTokens, nodes);
+//        }
+//    }
 
     /** Get all descendents; includes t itself. */
     public static List<PsiElement> getDescendants(PsiElement t) {

@@ -6,16 +6,16 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.debug.DebugEventListener;
 import org.apache.uima.ruta.parser.debug.RutaParser;
 
-public class RutaRamboParser extends RutaParser {
-    public RutaRamboParser(TokenStream input) {
+public class DebuggedRutaParser extends RutaParser {
+    public DebuggedRutaParser(TokenStream input) {
         super(input);
     }
 
-    public RutaRamboParser(TokenStream input, int port, RecognizerSharedState state) {
+    public DebuggedRutaParser(TokenStream input, int port, RecognizerSharedState state) {
         super(input, port, state);
     }
 
-    public RutaRamboParser(TokenStream input, DebugEventListener dbg) {
+    public DebuggedRutaParser(TokenStream input, DebugEventListener dbg) {
         super(input, dbg);
     }
     @Override
