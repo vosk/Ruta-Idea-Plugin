@@ -7,8 +7,6 @@ import org.antlr.intellij.adaptor.psi.PsiLanguageElementFactory;
 import vosk.ruta.RutaLanguage;
 import vosk.ruta.RutaParserLogic;
 
-import java.util.Deque;
-
 public class RutaContextPsiElementFactory implements ContextPsiElementFactory {
 
     private final PsiLanguageElementFactory factory;
@@ -17,23 +15,23 @@ public class RutaContextPsiElementFactory implements ContextPsiElementFactory {
         this.factory = PsiElementFactory.get(RutaLanguage.INSTANCE);
     }
 
+
     @Override
-    public IElementType getRuleIElementFor(Deque<String> callStack) {
-        String peek = callStack.pop();
-        IElementType type= factory.getRule(peek);
+    public IElementType getRuleIElementFor(String rule) {
+        IElementType type= factory.getRule(rule);
         if(type!=null){
             return type;
         }
-        if(RutaParserLogic.ruleIsIdentifierOwner(peek)){
-            return factory.getOrRegisterAsRule(peek,true);
+        if(RutaParserLogic.ruleIsIdentifierOwner(rule)){
+            return factory.getOrRegisterAsRule(rule,true);
         }
         else {
-            return factory.getOrRegisterAsRule(peek,false);
+            return factory.getOrRegisterAsRule(rule,false);
         }
     }
 
     @Override
-    public String getErrorStringFor(Deque<String> callStack, Deque<Exception> errorStack) {
-        return null;
+    public String getErrorStringFor(String rule, Exception e) {
+        return rule+" : "+e.toString();
     }
 }

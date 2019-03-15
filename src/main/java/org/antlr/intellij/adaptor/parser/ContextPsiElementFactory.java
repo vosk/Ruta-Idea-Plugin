@@ -2,12 +2,10 @@ package org.antlr.intellij.adaptor.parser;
 
 import com.intellij.psi.tree.IElementType;
 
-import java.util.Deque;
-
 public interface  ContextPsiElementFactory {
 
 
-    IElementType getRuleIElementFor(Deque<String> callStack);
+    IElementType getRuleIElementFor(String rule);
 
-    String getErrorStringFor(Deque<String> callStack, Deque<Exception> errorStack);
+    String getErrorStringFor(String rule, Exception e);
 }
