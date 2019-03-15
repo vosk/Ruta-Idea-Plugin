@@ -12,12 +12,7 @@ import org.apache.uima.ruta.extensions.RutaParseRuntimeException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-/** This is how we build an intellij PSI tree from an ANTLR parse tree.
- *  We let the ANTLR parser build its kind of ParseTree and then
- *  we convert to a PSI tree in one go using a standard ANTLR ParseTreeListener.
- *
- *  The list of SyntaxError objects are pulled from the parser and used
- *  for error message highlighting (error nodes don't have the info).
+/**
  */
 public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
     protected final Language language;
@@ -69,11 +64,11 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
 
         if (e instanceof MismatchedTokenException) {
             PsiBuilder.Marker mark = getBuilder().mark();
-//            PsiBuilder.Marker mark = builder.mark();
             builder.advanceLexer();
             System.out.println(e.getMessage());
             mark.error(e.toString());
         } else {
+            assert callStack.peek() != null;
             callStack.peek().error = e;
         }
     }
@@ -81,6 +76,7 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
 
     public void recognitionException(RutaParseRuntimeException e) {
 
+        assert callStack.peek() != null;
         callStack.peek().error = e;
     }
 
@@ -94,6 +90,7 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
 
     @Override
     public void exitRule(String grammarFileName, String ruleName) {
+        assert callStack.peek() !=null;
         CallPly ply = callStack.pop();
         ProgressIndicatorProvider.checkCanceled();
 
@@ -103,8 +100,6 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
             } else {
                 ply.marker.done(factory.getRuleIElementFor(ply.ruleName));
             }
-
-            //marker.done(new RuleIElementType(1,ruleName,language));
         } else {
             ply.marker.error(factory.getErrorStringFor(ply.ruleName, ply.error));
         }
