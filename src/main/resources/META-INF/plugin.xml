@@ -27,6 +27,7 @@
                                  implementationClass="vosk.ruta.refactoring.RutaRefactoringSupportProvider"/>
 
         <!-- Add your extensions here -->
+        <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.brace.RutaBraceMatcher"/>
     </extensions>
 
     <actions>
