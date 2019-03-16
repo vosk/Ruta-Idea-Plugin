@@ -21,6 +21,7 @@ public class DebuggedRutaParser extends RutaParser {
     @Override
     public void emitErrorMessage(RecognitionException e) {
         dbg.recognitionException(e);
+        state.failed=false; //this is really important for skip-retry recovery
         super.emitErrorMessage(e);
     }
 }

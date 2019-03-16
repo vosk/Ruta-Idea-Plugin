@@ -2,3 +2,5 @@ PACKAGE test;
 SCRIPT test2;
 
 DECLARE decl  (  STRING str STRING str2,asdeasd bbb);
+
+DECLARE decl  (  STRING str, STRING str2,asdeasd bbb);

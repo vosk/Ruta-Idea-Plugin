@@ -65,7 +65,6 @@ public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
         if (e instanceof MismatchedTokenException) {
             PsiBuilder.Marker mark = getBuilder().mark();
             builder.advanceLexer();
-            System.out.println(e.getMessage());
             mark.error(e.toString());
         } else {
             assert callStack.peek() != null;

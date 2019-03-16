@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class ANTLRLexerAdaptor<T extends Lexer & StateRecoverableLexer> extends com.intellij.lexer.LexerBase {
 
+
     private final Language language;
 
     /**
@@ -174,7 +175,18 @@ public class ANTLRLexerAdaptor<T extends Lexer & StateRecoverableLexer> extends 
     @Override
     public void advance() {
 //TODO        currentState = getLexerState(lexer);
-        currentToken = (CommonToken) lexer.nextToken();
+        try{
+            currentToken = (CommonToken) lexer.nextToken();
+        }
+        catch(LexerException e){
+            if(e.getForcedEmission()!=null){
+                currentToken= (CommonToken) e.getForcedEmission();
+            }
+            System.out.println(e.getOriginalException());
+
+
+        }
+
     }
 
     @Override

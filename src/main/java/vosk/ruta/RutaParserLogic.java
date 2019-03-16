@@ -1,5 +1,6 @@
 package vosk.ruta;
 
+import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
@@ -9,6 +10,7 @@ import org.antlr.runtime.RecognitionException;
 import org.apache.uima.ruta.parser.debug.RutaParser;
 
 public final class RutaParserLogic {
+
 
     private RutaParserLogic() {
 
@@ -72,6 +74,32 @@ public final class RutaParserLogic {
             return false;
         }
         return isSomekindOfDefinition(el.getNode().getElementType());
+
+    }
+
+    /**
+     * The plan to recover currently is just to skip until the next SEMI
+     * @param e
+     * @param builder
+     */
+
+    public static void recoverFromException(Exception e, PsiBuilder builder) {
+        while(true){
+            IElementType tokenType = builder.getTokenType();
+            if(tokenType==null){
+                break ;
+            }
+            assert tokenType instanceof  TokenIElementType;
+
+            if(((TokenIElementType)tokenType).getANTLRTokenType()==RutaParser.SEMI){
+                builder.advanceLexer();
+                break;
+            }
+            else{
+                builder.advanceLexer();
+            }
+
+        }
 
     }
 }

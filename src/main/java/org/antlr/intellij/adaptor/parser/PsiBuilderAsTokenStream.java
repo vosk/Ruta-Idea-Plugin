@@ -1,4 +1,4 @@
-package org.antlr.intellij.adaptor.bridge;
+package org.antlr.intellij.adaptor.parser;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -17,8 +17,6 @@ import java.util.Deque;
  */
 public class PsiBuilderAsTokenStream implements TokenStream {
     protected PsiBuilder builder;
-//TODO No token factory in ANTLR3
-    //    protected TokenFactory tokenFactory = CommonTokenFactory.DEFAULT;
 
     Deque<Integer> markStack = new ArrayDeque<>();
     public PsiBuilderAsTokenStream(PsiBuilder builder) {
@@ -28,20 +26,7 @@ public class PsiBuilderAsTokenStream implements TokenStream {
 
     @Override
     public Token LT(int k) {
-        Token t=null;
-//        int idx=0;
-        t=lookAhead(markStack.peek()+k);
-
-//        for(int i=0;i<k;i++){
-//            do {
-//                t=lookAhead(markStack.peek()+idx);
-//                idx++;
-//            }
-//            while(t.getChannel()!=Token.DEFAULT_CHANNEL);
-//
-//        }
-
-        return t;
+        return lookAhead(markStack.peek()+k);
     }
 
     @Override

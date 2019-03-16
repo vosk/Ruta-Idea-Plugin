@@ -41,9 +41,7 @@ import vosk.ruta.psi.RutaFile;
 public class RutaParserDefinition implements ParserDefinition {
     public static final IFileElementType FILE =
             new IFileElementType(RutaLanguage.INSTANCE);
-//    public static TokenLoader loader = null;
 
-    public static TokenIElementType ID;
     public final RutaContextPsiElementFactory contextPsiElementFactory = new RutaContextPsiElementFactory();
     public final static PsiLanguageElementFactory elementfactory = PsiElementFactory.get(RutaLanguage.INSTANCE);
 
@@ -59,58 +57,7 @@ public class RutaParserDefinition implements ParserDefinition {
     }
 
     public RutaParserDefinition() {
-//        if (loader == null) {
-//            Field[] declaredFields = RutaLexer.class.getDeclaredFields();
-//            List<Field> staticFields;
-//            staticFields= Arrays.asList(declaredFields).stream()
-//                    .filter(f-> java.lang.reflect.Modifier.isStatic(f.getModifiers()))
-//                    .filter(f->java.lang.reflect.Modifier.isFinal(f.getModifiers()))
-//                    .filter(f -> f.getType()==Integer.TYPE)
-//                    .collect(Collectors.toList());
-//
-//            List<Integer> tokenIds;
-//
-//            tokenIds = staticFields.stream().map(f -> {
-//                try {
-//                    return f.getInt(null);
-//                } catch (IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//                return Integer.MIN_VALUE;
-//            })
-//                    .collect(Collectors.toList());
-//
-//
-//            loader = new TokenLoader();
-//            try {
-//
-//                loader.load(RutaLanguage.INSTANCE,
-//                        this.getClass().getResourceAsStream("/ruta/antlr/RutaParser.tokens"),
-//                        (Map.Entry<Integer, String> entry) -> tokenIds.contains(entry.getKey())
-//                );
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
     }
-//TODO
-//    public static final TokenSet COMMENTS =
-//            PSIElementTypeFactory.createTokenSet(
-//                    RutaLanguage.INSTANCE,
-//                    RutaLanguageLexer.COMMENT,
-//                    RutaLanguageLexer.LINE_COMMENT);
-//
-//    public static final TokenSet WHITESPACE =
-//            PSIElementTypeFactory.createTokenSet(
-//                    RutaLanguage.INSTANCE,
-//                    RutaLanguageLexer.WS);
-//
-//    public static final TokenSet STRING =
-//            PSIElementTypeFactory.createTokenSet(
-//                    RutaLanguage.INSTANCE,
-//                    RutaLanguageLexer.STRING);
-
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
@@ -130,15 +77,13 @@ public class RutaParserDefinition implements ParserDefinition {
         }
         return new ANTLRParserAdaptor(RutaLanguage.INSTANCE, parser, contextPsiElementFactory) {
             @Override
+            protected void recoverFromException(Exception e, PsiBuilder builder) {
+                RutaParserLogic.recoverFromException(e, builder);
+            }
+
+            @Override
             protected void parse(DebugParser parser, IElementType root) throws RecognitionException {
                 RutaParserLogic.parse((RutaParser) parser, root);
-
-                // start rule depends on root passed in; sometimes we want to create an ID node etc...
-//                if ( root instanceof IFileElementType ) {
-//                    return ((RutaLanguageParser) parser).script();
-//                }
-//                // let's hope it's an ID as needed by "rename function"
-//                return ((RutaLanguageParser) parser).primary();
             }
         };
     }
@@ -269,10 +214,6 @@ public class RutaParserDefinition implements ParserDefinition {
         return TokenSet.create(
                 elementfactory.getOrRegisterAsToken(RutaLexer.StringLiteral,Token.HIDDEN_CHANNEL)
         );
-    }
-
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-        return SpaceRequirements.MAY;
     }
 
     /**
