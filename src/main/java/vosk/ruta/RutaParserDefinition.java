@@ -13,9 +13,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.adaptor.lexer.ANTLRLexerAdaptor;
-import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.antlr.intellij.adaptor.parser.ANTLRParserAdaptor;
-import org.antlr.intellij.adaptor.parser.RuleIElementType;
 import org.antlr.intellij.adaptor.psi.ANTLRPsiNode;
 import org.antlr.intellij.adaptor.psi.PsiElementFactory;
 import org.antlr.intellij.adaptor.psi.PsiLanguageElementFactory;
@@ -246,7 +244,7 @@ public class RutaParserDefinition implements ParserDefinition {
      * Convert from *NON-LEAF* parse node (AST they call it)
      * to PSI node. Leaves are created in the AST factory.
      * Rename re-factoring can cause this to be
-     * called on a TokenIElementType since we want to rename ID nodes.
+     * called on a TokenIElementType since we want to codeInsight ID nodes.
      * In that case, this method is called to create the root node
      * but with ID type. Kind of strange, but we can simply create a
      * ASTWrapperPsiElement to make everything work correctly.
@@ -265,13 +263,14 @@ public class RutaParserDefinition implements ParserDefinition {
      */
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        IElementType elType = node.getElementType();
-        if (elType instanceof TokenIElementType) {
-            return new ANTLRPsiNode(node);
-        }
-        if (!(elType instanceof RuleIElementType)) {
-            return new ANTLRPsiNode(node);
-        }
+        return contextPsiElementFactory.mapASTtoPsi(node);
+//        IElementType elType = node.getElementType();
+//        if (elType instanceof TokenIElementType) {
+//            return new ANTLRPsiNode(node);
+//        }
+//        if (!(elType instanceof RuleIElementType)) {
+//            return new ANTLRPsiNode(node);
+//        }
 //TODO        RuleIElementType ruleElType = (RuleIElementType) elType;
 //        switch ( ruleElType.getRuleIndex() ) {
 //            case RutaLanguageParser.RULE_function :
@@ -287,6 +286,6 @@ public class RutaParserDefinition implements ParserDefinition {
 //            default :
 //                return new ANTLRPsiNode(node);
 //        }
-        return new ANTLRPsiNode(node);
+//        return new ANTLRPsiNode(node);
     }
 }

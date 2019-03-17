@@ -1,18 +1,18 @@
 PACKAGE test;
 SCRIPT test2;
 
-DECLARE decl(STRING str,STRING str2,asdeasd bbb);
-DECLARE Annotation Text1(String a), Text2(String b);
+DECLARE decl<caret>(STRING str,STRING str2,asdeasd bbb);
+DECLARE Text1, Text2;
 DECLARE Annotation EmplRelation
    (Employee employeeRef, Employer employerRef);
 
-decl{ -> Text1.a="somestr"};
+
 Sentence{CONTAINS(EmploymentIndicator) -> CREATE(EmplRelation,
     "employeeRef" = Employee, "employerRef" = Employer)};
 
-ANY+{ -> MARK(Text1)};
+ANY+{ -> MARK(decl)};
 
-ANY+{-PARTOF(Text2) -> MARK(Text2)};
+ANY+{-PARTOF(decl) -> MARK(Text2)};
 
 Sentence{CONTAINS(EmploymentIndicator) -> CREATE(EmplRelation,
     "employeeRef" = Employee, "employerRef" = Employer)};

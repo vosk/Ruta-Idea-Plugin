@@ -1,4 +1,4 @@
-package vosk.ruta.psi;
+package vosk.ruta.psi.reference;
 
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.TextRange;
@@ -9,6 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vosk.ruta.RutaParserLogic;
+import vosk.ruta.psi.nodes.IdentifierPsiNode;
 
 import java.util.Arrays;
 
@@ -16,7 +17,7 @@ public abstract class RutaElementReference extends PsiReferenceBase<IdentifierPs
 	public RutaElementReference(@NotNull IdentifierPsiNode element) {
 		/** WARNING: You must send up the text range or you get this error:
 		 * "Cannot find manipulator for PsiElement(ID) in org.antlr.jetbrains.sample.RutaElementReference"...
-		 *  when you click on an identifier.  During rename you get this
+		 *  when you click on an identifier.  During codeInsight you get this
 		 *  error too if you don't impl handleElementRename().
 		 *
 		 *  The range is relative to start of the token; I guess for
@@ -33,7 +34,7 @@ public abstract class RutaElementReference extends PsiReferenceBase<IdentifierPs
 	}
 
 	/** Change the REFERENCE's ID node (not the targeted def's ID node)
-	 *  to reflect a rename.
+	 *  to reflect a codeInsight.
 	 *
 	 *  Without this method, we get an error ("Cannot find manipulator...").
 	 *
@@ -47,15 +48,13 @@ public abstract class RutaElementReference extends PsiReferenceBase<IdentifierPs
 		return myElement.setName(newElementName);
 	}
 
-	/** Resolve a reference to the definition subtree (subclass of
-	 *  IdentifierDefSubtree), do not resolve to the ID child of that
-	 *  definition subtree root.
+	/**
 	 */
 	@Nullable
 	@Override
 	public PsiElement resolve() {
 		PsiElement context = myElement.getContext();
-		return getDefinitionInTree(context,myElement);
+		return getDefinitionInTree(context);
 //		System.out.println(getClass().getSimpleName()+
 //		                   ".resolve("+myElement.getName()+
 //		                   " at "+Integer.toHexString(myElement.hashCode())+")");
@@ -66,7 +65,7 @@ public abstract class RutaElementReference extends PsiReferenceBase<IdentifierPs
 //		return null;
 	}
 
-	public PsiElement getDefinitionInTree(PsiElement tree, PsiNameIdentifierOwner owner){
+	public PsiElement getDefinitionInTree(PsiElement tree){
 		ProgressIndicatorProvider.checkCanceled();
 		if(RutaParserLogic.isSomekindOfDefinition(tree) ) {
 			PsiElement in = findIdentifierIn(tree);
@@ -76,7 +75,7 @@ public abstract class RutaElementReference extends PsiReferenceBase<IdentifierPs
 
 		}
 		for(PsiElement child: Arrays.asList(tree.getChildren())){
-			PsiElement definitionInTree = getDefinitionInTree(child, owner);
+			PsiElement definitionInTree = getDefinitionInTree(child);
 			if(definitionInTree!=null){
 				return definitionInTree;
 			}

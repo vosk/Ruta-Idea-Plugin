@@ -28,6 +28,9 @@
 
         <!-- Add your extensions here -->
         <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.brace.RutaBraceMatcher"/>
+
+        <annotator language="Ruta" implementationClass="vosk.ruta.PathToPackageMatcherAnnotator"/>
+
     </extensions>
 
     <actions>

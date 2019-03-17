@@ -3,8 +3,6 @@ package org.antlr.intellij.adaptor.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.antlr.intellij.adaptor.parser.RuleIElementType;
 import org.jetbrains.annotations.NotNull;
@@ -49,12 +47,14 @@ public class ANTLRPsiNode extends ASTWrapperPsiElement {
 //     *  From the return to scope node, you typically look for a declaration
 //     *  by looking at its children.
 //     */
-    @Override
-    public PsiElement getContext() {
-        if (getParent() != null && !(getParent() instanceof PsiFile))
-            return getParent().getContext();
-        return this;
-    }
+//    @Override
+//    public PsiElement getContext() {
+//        PsiElement parent = getParent();
+//        if(parent==null){
+//            return this;
+//        }
+//        return parent.getContext();
+//    }
 //
 ////
 //    public static PsiElement getContextFor(PsiElement element) {
@@ -64,4 +64,5 @@ public class ANTLRPsiNode extends ASTWrapperPsiElement {
 //        }
 //        return parent;
 //    }
+
 }

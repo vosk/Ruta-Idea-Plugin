@@ -7,6 +7,7 @@ import com.intellij.psi.tree.IFileElementType;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.antlr.intellij.adaptor.parser.RuleIElementType;
 import org.antlr.runtime.RecognitionException;
+import org.apache.uima.ruta.RutaModule;
 import org.apache.uima.ruta.parser.debug.RutaParser;
 
 public final class RutaParserLogic {
@@ -22,7 +23,8 @@ public final class RutaParserLogic {
 
     public static void parse(RutaParser parser, IElementType root) throws RecognitionException {
         if ( root instanceof IFileElementType) {
-            parser.file_input(root.toString());
+            RutaModule rutaModule = parser.file_input(root.toString());
+            System.out.println(rutaModule);
         }else if( root instanceof TokenIElementType){ //Hack! parser is not involved
             parser.getTokenStream().consume(); // Consume a token
         } else if( root instanceof RuleIElementType){

@@ -1,4 +1,4 @@
-package vosk.ruta.psi;
+package vosk.ruta.psi.nodes;
 
 
 import com.intellij.psi.PsiElement;
@@ -7,10 +7,14 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.antlr.intellij.adaptor.psi.ANTLRPsiLeafNode;
+import org.antlr.intellij.adaptor.psi.PsiElementFactory;
+import org.antlr.intellij.adaptor.psi.Trees;
+import org.antlr.runtime.Token;
+import org.apache.uima.ruta.parser.debug.RutaParser;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vosk.ruta.RutaParserLogic;
+import vosk.ruta.RutaLanguage;
 
 /** From doc: "Every element which can be renamed or referenced
  *             needs to implement com.intellij.psi.PsiNamedElement interface."
@@ -27,7 +31,7 @@ import vosk.ruta.RutaParserLogic;
  *  PsiNameIdentifierOwner (vs PsiNamedElement) implementations are the
  *  corresponding subtree roots that define symbols.
  *
- *  You can click on an ID in the editor and ask for a rename for any node
+ *  You can click on an ID in the editor and ask for a codeInsight for any node
  *  of this type.
  */
 public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdentifierOwner {
@@ -66,18 +70,18 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdenti
 			                   kind+this+" at "+Integer.toHexString(this.hashCode()));
 		*/
 		//TODO this doesnt work
-//		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).getRule(RutaParser.Identifier);
-////		RutaASTFactory.
-//		PsiElement newID = Trees.createLeafFromText(getProject(),
-//		                                            RutaLanguage.INSTANCE,
-//		                                            getContext(),
-//		                                            name,
-//													type);
-//		if ( newID!=null ) {
-//			return this.replace(newID); // use replace on leaves but replaceChild on ID nodes that are part of defs/decls.
-//		}
-//		return this;
-		return null;
+		IElementType type = PsiElementFactory.get(RutaLanguage.INSTANCE).getToken(RutaParser.Identifier, Token.DEFAULT_CHANNEL);
+
+		PsiElement newID = Trees.createLeafFromText(getProject(),
+		                                            RutaLanguage.INSTANCE,
+		                                            getContext(),
+		                                            name,
+													type);
+		if ( newID!=null ) {
+			return this.replace(newID); // use replace on leaves but replaceChild on ID nodes that are part of defs/decls.
+		}
+		return this;
+//		return null;
 	}
 
 	/** Create and return a PsiReference object associated with this ID
@@ -108,26 +112,26 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdenti
 //					return new FunctionRef(this);
 //			}
 //		}
-		PsiElement parent = getParent();
-		while(parent!=null){
-			if(RutaParserLogic.isSomekindOfDefinition(parent))
-				return null;
-			parent=parent.getParent();
-		}
-		return new VariableReference(this);
+//		PsiElement parent = getParent();
+//		while(parent!=null){
+//			if(RutaParserLogic.isSomekindOfDefinition(parent))
+//				return null;
+//			parent=parent.getParent();
+//		}
+//		return new VariableReference(this);
+		return null;
 	}
+
 
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier() {
 		return this;
-//		return Arrays.asList(this.getChildren())
-//				.stream()
-//				.filter(element-> element instanceof  IdentifierPsiNode)
-//				.findFirst()
-//				.orElse(null);
 	}
-	@Override
-	public int getTextOffset(){ return this.getNode().getStartOffset();};
 
+	@Nullable
+	@Override
+	public PsiElement getIdentifyingElement() {
+		return this;
+	}
 }

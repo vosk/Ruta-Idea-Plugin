@@ -75,7 +75,7 @@ public class RutaRefactoringSupportProvider extends RefactoringSupportProvider {
 //        if (context == null || context.getContainingFile() instanceof GroovyFile) return false;
 //        PsiElement parent = context.getParent();
 //
-//        //don't try to inplace rename aliased imported references
+//        //don't try to inplace codeInsight aliased imported references
 //        if (parent instanceof GrReferenceElement) {
 //            GroovyResolveResult result = ((GrReferenceElement)parent).advancedResolve();
 //            PsiElement fileResolveContext = result.getCurrentFileResolveContext();

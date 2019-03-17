@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.apache.uima.ruta.parser.debug.RutaLexer;
 import org.jetbrains.annotations.NotNull;
-import vosk.ruta.psi.IdentifierPsiNode;
+import vosk.ruta.psi.nodes.IdentifierPsiNode;
 
 /** How to create parse tree nodes (Jetbrains calls them AST nodes). Later
  *  non-leaf nodes are converted to PSI nodes by the {@link ParserDefinition}.
@@ -19,6 +19,9 @@ import vosk.ruta.psi.IdentifierPsiNode;
  *  to override.
  */
 public class RutaASTFactory extends CoreASTFactory {
+	public RutaASTFactory() {
+	}
+
 	/** Create an internal parse tree node. FileElement for root or a parse tree CompositeElement (not
 	 *  PSI) for the token.
 	 *  The FileElement is a parse tree node, which is converted to a PsiFile
@@ -44,7 +47,7 @@ public class RutaASTFactory extends CoreASTFactory {
 			// because we have no context information here. All we know is that
 			// we have an identifier node that will be connected somewhere in a tree.
 			//
-			// You can only rename, find usages, etc... on leaves implementing PsiNamedElement
+			// You can only codeInsight, find usages, etc... on leaves implementing PsiNamedElement
 			//
 			// TODO: try not to create one for IDs under def subtree roots like vardef, function
 //			IElementType elementType = PsiElementFactory.get(type.getLanguage()).getRule(((TokenIElementType) type).getANTLRTokenType());

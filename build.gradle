@@ -29,7 +29,7 @@ intellij {
     version '2018.3.5'
 //    setPlugins("PsiViewer")
     pluginName 'antlr4-intellij-plugin-sample'
-    plugins 'Groovy','PsiViewer:183.2153'
+    plugins 'PsiViewer:183.2153'
     downloadSources true
     updateSinceUntilBuild false
 }
