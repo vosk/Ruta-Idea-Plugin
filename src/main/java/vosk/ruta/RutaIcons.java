@@ -9,7 +9,7 @@ public class RutaIcons {
 
     static {
         try {
-            FILE = IconLoader.getIcon("/icon/jar-gray.png");
+            FILE = IconLoader.getIcon("/icon/uima.png");
         } catch (Exception e) {
 
         }
