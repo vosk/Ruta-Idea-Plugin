@@ -3,6 +3,7 @@ package vosk.ruta.ui.facet;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import vosk.ruta.ui.framework.RutaVersionSelectionComponent;
@@ -40,12 +41,12 @@ public class RutaFacetTab extends FacetEditorTab {
 
   @Override
   public boolean isModified() {
-//    return !StringUtil.equals(mySettings.rutasdkname, mySdkPanel.getSdkName());
-    return false;
+    return !StringUtil.equals(mySettings.rutaVersion, (CharSequence) mySdkPanel.getComboBox1().getSelectedItem());
   }
 
   @Override
   public void apply() throws ConfigurationException {
+    mySettings.rutaVersion= (String) mySdkPanel.getComboBox1().getSelectedItem();
 //    mySettings.rutasdkname = mySdkPanel.getSdkName();
   }
 
