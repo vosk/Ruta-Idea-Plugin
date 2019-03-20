@@ -1,4 +1,4 @@
-package vosk.ruta.highlight;
+package vosk.ruta.ui.highlight;
 
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.Project;

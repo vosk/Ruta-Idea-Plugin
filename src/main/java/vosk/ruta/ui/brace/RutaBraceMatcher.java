@@ -1,4 +1,4 @@
-package vosk.ruta.brace;
+package vosk.ruta.ui.brace;
 
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;

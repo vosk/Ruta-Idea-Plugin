@@ -1,4 +1,4 @@
-package vosk.ruta.highlight;
+package vosk.ruta.ui.highlight;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;

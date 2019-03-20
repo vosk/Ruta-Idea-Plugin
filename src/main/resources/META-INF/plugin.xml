@@ -15,9 +15,13 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!--<moduleType id="RUTA_MODULE" implementationClass="vosk.ruta.ui.brace.RutaModuleType"/>-->
+
+
         <fileTypeFactory implementation="vosk.ruta.RutaFileTypeFactory"/>
         <lang.parserDefinition language="Ruta" implementationClass="vosk.ruta.RutaParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Ruta" implementationClass="vosk.ruta.highlight.RutaSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory language="Ruta" implementationClass="vosk.ruta.ui.highlight.RutaSyntaxHighlighterFactory"/>
         <lang.ast.factory language="Ruta" implementationClass="vosk.ruta.RutaASTFactory"/>
 
 
@@ -27,13 +31,17 @@
                                  implementationClass="vosk.ruta.refactoring.RutaRefactoringSupportProvider"/>
 
         <!-- Add your extensions here -->
-        <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.brace.RutaBraceMatcher"/>
+        <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.ui.brace.RutaBraceMatcher"/>
 
         <annotator language="Ruta" implementationClass="vosk.ruta.PathToPackageMatcherAnnotator"/>
 
+        <framework.type implementation="vosk.ruta.ui.framework.RutaFramework"/>
+        <facetType implementation="vosk.ruta.ui.facet.RutaFacetType"/>
+        <projectStructureDetector implementation="vosk.ruta.projectStructureDetector.RutaProjectStructureDetector"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
     </actions>
+    <depends>org.jetbrains.idea.maven</depends>
 </idea-plugin>
