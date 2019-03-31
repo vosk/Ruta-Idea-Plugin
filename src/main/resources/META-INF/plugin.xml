@@ -35,13 +35,14 @@
 
         <annotator language="Ruta" implementationClass="vosk.ruta.PathToPackageMatcherAnnotator"/>
 
-        <framework.type implementation="vosk.ruta.ui.framework.RutaFramework"/>
+        <!--<framework.type implementation="vosk.ruta.ui.framework.RutaFramework"/>-->
         <facetType implementation="vosk.ruta.ui.facet.RutaFacetType"/>
         <projectStructureDetector implementation="vosk.ruta.projectStructureDetector.RutaProjectStructureDetector"/>
+        <!--<moduleConfigurationEditorProvider implementation="vosk.ruta.ui.module.RutaModuleConfigurationEditorProvider"/>-->
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
     </actions>
-    <depends>org.jetbrains.idea.maven</depends>
+    <!--<depends>org.jetbrains.idea.maven</depends>-->
 </idea-plugin>

@@ -27,6 +27,11 @@ public class RutaFacetType extends FacetType<RutaFacet, RutaFacetConfiguration> 
     return new RutaFacetConfiguration();
   }
 
+//  @Override
+//  public RutaFacetConfiguration createDefaultConfiguration() {
+//    return null;
+//  }
+
   @Override
   public RutaFacet createFacet(@NotNull final Module module,
                                final String name,
