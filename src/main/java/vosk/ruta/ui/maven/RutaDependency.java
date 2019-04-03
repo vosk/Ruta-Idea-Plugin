@@ -4,10 +4,15 @@ import com.intellij.jarRepository.JarRepositoryManager;
 import com.intellij.jarRepository.RemoteRepositoriesConfiguration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.LibraryOrderEntry;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.impl.libraries.LibraryEx;
 import com.intellij.openapi.roots.libraries.*;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.NewLibraryEditor;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectLibrariesConfigurable;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.StructureLibraryTableModifiableModelProvider;
 import org.jetbrains.concurrency.Promise;
 import org.jetbrains.idea.maven.utils.library.RepositoryLibraryDescription;
 import vosk.ruta.ui.facet.RutaFacetConfiguration;
@@ -101,24 +106,34 @@ public class RutaDependency {
 
         libraries.forEach(modifiableModel::removeOrderEntry);
         modifiableModel.commit();
+
+        StructureLibraryTableModifiableModelProvider modelProvider = ProjectLibrariesConfigurable.getInstance(project).getModelProvider();
+//
+//        LibraryTable projectLibraryTable
+//                = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
+        cleanLibraryTable(modelProvider, keepVersion);
     }
 
-    public static void cleanLibraryTable(LibraryTable table, String keepVersion) {
-        LibraryTable.ModifiableModel modifiableModel = table.getModifiableModel();
-        Library[] libraries = modifiableModel.getLibraries();
-        List<Library> toDelete = asList(libraries).stream()
-                .filter(lib -> lib.getName().startsWith(GROUPID + ":" + ARTIFACTID))
-                .filter(lib -> !lib.getName().contains(keepVersion))
-                .collect(Collectors.toList());
-        toDelete.forEach(library -> {
-            try {
-                modifiableModel.removeLibrary(library);
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void cleanLibraryTable(StructureLibraryTableModifiableModelProvider table, String keepVersion) {
 
-            }
-        });
-//        modifiableModel.commit();
+//        WriteAction.run(() -> {
 
+
+            LibraryTable.ModifiableModel modifiableModel = table.getModifiableModel();
+            Library[] libraries = modifiableModel.getLibraries();
+            List<Library> toDelete = asList(libraries).stream()
+                    .filter(lib -> lib.getName().startsWith(GROUPID + ":" + ARTIFACTID))
+                    .filter(lib -> !lib.getName().contains(keepVersion))
+                    .collect(Collectors.toList());
+            toDelete.forEach(library -> {
+                try {
+                    modifiableModel.removeLibrary(library);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            });
+            modifiableModel.commit();
+//        });
     }
 }
