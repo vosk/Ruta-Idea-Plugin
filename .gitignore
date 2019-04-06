@@ -43,3 +43,4 @@ target/
 /src/main/resources/ruta/antlr/
 /.idea/
 /gradle/
+/gradle.properties

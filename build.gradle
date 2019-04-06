@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'vosk.ruta'
-version '1.0-SNAPSHOT'
+version '0.0.1'
 
 sourceCompatibility = 1.8
 
@@ -28,16 +28,18 @@ dependencies {
 intellij {
     version '2018.3.5'
 //    setPlugins("PsiViewer")
-    pluginName 'antlr4-intellij-plugin-sample'
+    pluginName 'ruta-jetbrains-plugin'
     plugins 'PsiViewer:183.2153','maven' 
     downloadSources true
     updateSinceUntilBuild false
 }
-patchPluginXml {
-    changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+publishPlugin {
+    channels 'beta'
+    username intellijPublishUsername
+    password intellijPublishPassword
 }
+
+
 def genSource= 'src/main/gen'
 def parserPackage= "org.apache.uima.ruta.parser.debug"
 sourceSets.main.java.srcDir genSource

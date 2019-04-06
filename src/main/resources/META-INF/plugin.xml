@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>vosk.ruta.ruta-language</id>
+    <id>vosk.ruta.ruta-idea-plugin</id>
     <name>UIMA Ruta Language Support</name>
     <vendor email="manos.orfanoudakis@gmail.com" url="">Manos Orfanoudakis</vendor>
 
@@ -7,12 +7,18 @@
     UIMA Ruta Support for IDEA <br>
     Basic editor and more in the future
     ]]></description>
+    <change-notes><![CDATA[
+        -First Revision April 2019:
+            *Basic syntax highlighting
+            *Some Package resolution capabilities
+     ]]></change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
+    <idea-version since-build="183.5" until-build="191.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
 
@@ -21,7 +27,8 @@
 
         <fileTypeFactory implementation="vosk.ruta.RutaFileTypeFactory"/>
         <lang.parserDefinition language="Ruta" implementationClass="vosk.ruta.RutaParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Ruta" implementationClass="vosk.ruta.ui.highlight.RutaSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory language="Ruta"
+                                       implementationClass="vosk.ruta.ui.highlight.RutaSyntaxHighlighterFactory"/>
         <lang.ast.factory language="Ruta" implementationClass="vosk.ruta.RutaASTFactory"/>
 
 
