@@ -51,7 +51,7 @@ public class RutaScriptPsiNode extends RutaScopedNode implements PsiNameIdentifi
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getReferencedFile();
+        return this.getNamedElementList();
     }
     @Override
     public RutaScopePath getScopePath() {
