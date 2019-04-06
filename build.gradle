@@ -34,12 +34,14 @@ intellij {
     updateSinceUntilBuild false
 }
 publishPlugin {
-    channels 'beta'
+    channels 'alpha'
     username intellijPublishUsername
     password intellijPublishPassword
 }
 
+patchPluginXml{
 
+}
 def genSource= 'src/main/gen'
 def parserPackage= "org.apache.uima.ruta.parser.debug"
 sourceSets.main.java.srcDir genSource
