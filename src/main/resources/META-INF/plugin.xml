@@ -33,7 +33,7 @@
         <!-- Add your extensions here -->
         <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.ui.brace.RutaBraceMatcher"/>
 
-        <annotator language="Ruta" implementationClass="vosk.ruta.PathToPackageMatcherAnnotator"/>
+        <annotator language="Ruta" implementationClass="vosk.ruta.ui.annotator.PathToPackageMatcherAnnotator"/>
 
         <!--<framework.type implementation="vosk.ruta.ui.framework.RutaFramework"/>-->
         <facetType implementation="vosk.ruta.ui.facet.RutaFacetType"/>

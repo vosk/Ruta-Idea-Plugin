@@ -212,6 +212,16 @@ public class Trees {
         // start rule depends on root passed in
     }
 
+    public static PsiElement createTreeFromText(Project project, Language language, PsiElement context,
+                                                String text, IElementType type)
+    {
+        PsiFileFactoryImpl factory = (PsiFileFactoryImpl) PsiFileFactory.getInstance(project);
+        PsiElement el = factory.createElementFromText(text, language, type, context);
+        if ( el==null ) return null;
+        return el.getFirstChild(); // forces parsing of file!!
+        // start rule depends on root passed in
+    }
+
     public static void replacePsiFileFromText(final Project project, Language language, final PsiFile psiFile, String text) {
         final PsiFile newPsiFile = createFile(project, language, text);
         if ( newPsiFile==null ) return;

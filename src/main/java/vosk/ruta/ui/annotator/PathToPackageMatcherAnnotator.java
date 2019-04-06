@@ -1,5 +1,6 @@
-package vosk.ruta;
+package vosk.ruta.ui.annotator;
 
+import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
@@ -12,13 +13,18 @@ import vosk.ruta.psi.nodes.RutaScopePath;
 public class PathToPackageMatcherAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
+
         if (element instanceof RutaPackageDeclarationPsiNode) {
-            RutaScopePath packageScopePath = ((RutaPackageDeclarationPsiNode) element).getScopePath();
-            PsiFile containingFile = element.getContainingFile();
+            RutaPackageDeclarationPsiNode declarationPsiNode = ((RutaPackageDeclarationPsiNode) element);
+            RutaScopePath packageScopePath = declarationPsiNode.getScopePath();
+            PsiFile containingFile = declarationPsiNode.getContainingFile();
             if(containingFile instanceof RutaFile){
                 RutaScopePath fileScopePath = ((RutaFile) containingFile).getScopePath();
-                if(!fileScopePath.equal(packageScopePath))
-                    holder.createErrorAnnotation(element.getTextRange(), "Package "+packageScopePath+" does not match file path: "+fileScopePath);
+                if(!fileScopePath.equal(packageScopePath)) {
+                    Annotation errorAnnotation = holder.createErrorAnnotation(declarationPsiNode.getNamedElementList(), "Package " + packageScopePath + " does not match file path: " + fileScopePath);
+                    errorAnnotation.registerFix(new RenameIdentifierFromPathQuickFix());
+                }
+
             }
 
         }

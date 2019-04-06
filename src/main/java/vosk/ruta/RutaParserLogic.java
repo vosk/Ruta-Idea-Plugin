@@ -28,11 +28,13 @@ public final class RutaParserLogic {
         }else if( root instanceof TokenIElementType){ //Hack! parser is not involved
             parser.getTokenStream().consume(); // Consume a token
         } else if( root instanceof RuleIElementType){
-            RuleIElementType cast = (RuleIElementType) root;
             switch(((RuleIElementType) root).getRuleName()){
 
                 case "identifer":
                     parser.variableDeclaration();
+                    break;
+                case "dottedIdentifier":
+                    parser.dottedIdentifier();
                     break;
             }
             parser.file_input(root.toString());
