@@ -21,6 +21,13 @@ public final class RutaParserLogic {
         return antlrToken == RutaParser.Identifier;
     }
 
+    /**
+     * This generally is needed to call the correct antlr method of the parser based on the root element type.
+     * {@link RutaParserDefinition} uses this, also the {@link vosk.ruta.psi.nodes.RutaQualifiedIdentifierHolder}
+     * @param parser to run based on root element type
+     * @param root the subtree root type, determines which parser method to call.
+     * @throws RecognitionException by the parser
+     */
     public static void parse(RutaParser parser, IElementType root) throws RecognitionException {
         if ( root instanceof IFileElementType) {
             RutaModule rutaModule = parser.file_input(root.toString());
@@ -30,7 +37,7 @@ public final class RutaParserLogic {
         } else if( root instanceof RuleIElementType){
             switch(((RuleIElementType) root).getRuleName()){
 
-                case "identifer":
+                case "identifier":
                     parser.variableDeclaration();
                     break;
                 case "dottedIdentifier":
@@ -83,8 +90,9 @@ public final class RutaParserLogic {
 
     /**
      * The plan to recover currently is just to skip until the next SEMI
+     *  Without this, the parser simply give ups and skips the rest of the file.
      * @param e
-     * @param builder
+     * @param builder to advance until the next statement
      */
 
     public static void recoverFromException(Exception e, PsiBuilder builder) {

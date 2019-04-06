@@ -8,6 +8,10 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.apache.uima.ruta.parser.debug.RutaLexer;
 
+/**
+ * IntelliJ needs lexers to store state (what flex calls Initial Conditions, JFlex calls them states)
+ * so that resuming parse from arbitrary tokens is possible. Thankfully, the Ruta Lexer doesn't use them.
+ */
 public class RutaLexerWithState extends RutaLexer implements StateRecoverableLexer {
 
 

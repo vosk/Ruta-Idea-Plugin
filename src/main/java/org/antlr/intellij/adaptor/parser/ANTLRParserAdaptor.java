@@ -12,7 +12,7 @@ import org.antlr.runtime.debug.DebugParser;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * An adaptor that makes an ANTLR parser look like a PsiParser.
+ * An adaptor that makes an ANTLR {@link org.antlr.runtime.Parser} look like a {@link PsiParser}.
  */
 public abstract class ANTLRParserAdaptor implements PsiParser {
     protected final Language language;

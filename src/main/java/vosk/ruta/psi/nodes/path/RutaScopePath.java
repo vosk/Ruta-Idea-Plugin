@@ -2,6 +2,10 @@ package vosk.ruta.psi.nodes.path;
 
 import java.util.LinkedList;
 
+/**
+ * Holder for a qualified name, or path to a file, a file element etc
+ * the file extension for files is omitted.
+ */
 public class RutaScopePath {
     public static final String RELATIVE = "<relative>";
 

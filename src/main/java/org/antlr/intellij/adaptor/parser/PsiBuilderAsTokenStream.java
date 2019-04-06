@@ -13,7 +13,7 @@ import java.util.Deque;
 
 /** Make a PsiBuilder look like a source of ANTLR tokens. PsiBuilder
  *  Quick primer: the source can be advanced, rewound or peek-ed
- *  Handles marking and backtracking just fine, consume maps to advanceLexer()
+ *  Handles marking and backtracking just fine, consume maps to advanceLexer(), so that the builder moves forward
  */
 public class PsiBuilderAsTokenStream implements TokenStream {
     protected PsiBuilder builder;

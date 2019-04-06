@@ -13,6 +13,11 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
+ * This {@link org.antlr.runtime.debug.DebugEventListener} informs a {@link PsiBuilder}
+ * about rule entries and exits by constructing markers whenever that happens. Also, does
+ * some error handling, but the parser must indeed call
+ * {@link org.antlr.runtime.debug.DebugEventListener#recognitionException}.
+ * Because the default Ruta Parser does not, we have {@link vosk.ruta.DebuggedRutaParser}
  */
 public class ANTLRPsiBuilderDebugListener extends BlankDebugEventListener {
     protected final Language language;

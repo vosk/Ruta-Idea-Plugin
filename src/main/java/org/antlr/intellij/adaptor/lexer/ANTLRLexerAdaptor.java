@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  *
+ * This class adapts an ANTLR Lexer to a JetBrains Lexer, to use in a PsiBuilder
  * @author Sam Harwell, Manos Orfanoudakis
  *
  */
@@ -133,6 +134,7 @@ public class ANTLRLexerAdaptor<T extends Lexer & StateRecoverableLexer> extends 
     public void start(CharSequence buffer, int startOffset, int endOffset, int initialState) {
         this.buffer = buffer;
         this.endOffset = endOffset;
+        //TODO this is slow, investigate no-copy constructor
         ANTLRStringStream in = new ANTLRStringStream(buffer.subSequence(0,endOffset).toString());
 
 //        CharStream in = new CharSequenceCharStream(buffer, endOffset, IntStream.UNKNOWN_SOURCE_NAME);

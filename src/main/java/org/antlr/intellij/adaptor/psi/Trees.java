@@ -209,7 +209,6 @@ public class Trees {
         PsiElement el = factory.createElementFromText(text, language, type, context);
         if ( el==null ) return null;
         return PsiTreeUtil.getDeepestFirst(el); // forces parsing of file!!
-        // start rule depends on root passed in
     }
 
     public static PsiElement createTreeFromText(Project project, Language language, PsiElement context,
@@ -219,7 +218,6 @@ public class Trees {
         PsiElement el = factory.createElementFromText(text, language, type, context);
         if ( el==null ) return null;
         return el.getFirstChild(); // forces parsing of file!!
-        // start rule depends on root passed in
     }
 
     public static void replacePsiFileFromText(final Project project, Language language, final PsiFile psiFile, String text) {
