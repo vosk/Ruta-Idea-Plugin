@@ -2,10 +2,10 @@
     <id>vosk.ruta.ruta-idea-plugin</id>
     <name>UIMA Ruta Language Support</name>
     <vendor email="manos.orfanoudakis@gmail.com" url="">Manos Orfanoudakis</vendor>
-
     <description><![CDATA[
     UIMA Ruta Support for IDEA <br>
     Basic editor and more in the future
+    Source available at: https://github.com/vosk/Ruta-Idea-Plugin
     ]]></description>
     <change-notes><![CDATA[
         -First Revision April 2019:
