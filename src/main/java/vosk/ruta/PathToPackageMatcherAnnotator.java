@@ -13,12 +13,12 @@ public class PathToPackageMatcherAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof RutaPackageDeclarationPsiNode) {
-            RutaScopePath scopePath = ((RutaPackageDeclarationPsiNode) element).getScopePath();
+            RutaScopePath packageScopePath = ((RutaPackageDeclarationPsiNode) element).getScopePath();
             PsiFile containingFile = element.getContainingFile();
             if(containingFile instanceof RutaFile){
                 RutaScopePath fileScopePath = ((RutaFile) containingFile).getScopePath();
-                if(!fileScopePath.equal(scopePath))
-                    holder.createErrorAnnotation(element.getTextRange(), "Package does not match file path");
+                if(!fileScopePath.equal(packageScopePath))
+                    holder.createErrorAnnotation(element.getTextRange(), "Package "+packageScopePath+" does not match file path:"+fileScopePath);
             }
 
         }

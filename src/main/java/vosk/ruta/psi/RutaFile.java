@@ -2,6 +2,9 @@ package vosk.ruta.psi;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -12,15 +15,13 @@ import vosk.ruta.psi.nodes.RutaScopePath;
 import vosk.ruta.psi.types.RutaTypeIndex;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 public class RutaFile extends PsiFileBase implements RutaScope {
-    private final RutaScopePath path;
     private final RutaTypeIndex index = new RutaTypeIndex();
     public RutaFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, RutaLanguage.INSTANCE);
-//        viewProvider.getFileType()
-        //TODO extract package path
-        path=RutaScopePath.builder().build();
+
     }
 
     @NotNull
@@ -46,7 +47,15 @@ public class RutaFile extends PsiFileBase implements RutaScope {
 
     @Override
     public RutaScopePath getScopePath() {
-        return path;
+        VirtualFile sourceRootForFile = ProjectFileIndex.getInstance(this.getProject()).getSourceRootForFile(this.getVirtualFile());
+        String relativePath = VfsUtilCore.getRelativePath(this.getVirtualFile(), sourceRootForFile, '/');
+        String[] split = relativePath.split("/");
+
+        RutaScopePath.Builder builder = RutaScopePath.builder();
+        Arrays.stream(split)
+                .filter(str-> !str.equals(this.getName()))
+                .forEachOrdered(builder::postFix);
+        return builder.build();
     }
 
     public RutaTypeIndex getIndex() {

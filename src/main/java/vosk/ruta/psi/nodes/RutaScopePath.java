@@ -34,4 +34,8 @@ public class RutaScopePath {
         }
 
     }
+    @Override
+    public String toString(){
+        return String.join(".",path);
+    }
 }
