@@ -1,6 +1,7 @@
 package vosk.ruta.psi.nodes;
 
 import com.intellij.psi.PsiElement;
+import vosk.ruta.psi.nodes.path.RutaScopePath;
 
 public interface RutaScope  {
     default boolean contains(RutaScope other){

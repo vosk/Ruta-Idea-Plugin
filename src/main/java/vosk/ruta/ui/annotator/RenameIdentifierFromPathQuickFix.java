@@ -54,7 +54,7 @@ public class RenameIdentifierFromPathQuickFix implements LocalQuickFix, Intentio
         if(namedIdentifer != null){
             System.out.println(((PsiNamedElement) namedIdentifer).getName());
             RutaFile file= (RutaFile) namedIdentifer.getContainingFile();
-            ((PsiNamedElement) namedIdentifer).setName(file.getScopePath().toString());
+            ((PsiNamedElement) namedIdentifer).setName(file.getScopePath().getPackagePath().toString());
         }
 
     }

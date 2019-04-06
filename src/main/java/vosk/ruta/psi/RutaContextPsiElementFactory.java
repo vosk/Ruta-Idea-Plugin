@@ -13,6 +13,7 @@ import vosk.ruta.RutaParserLogic;
 import vosk.ruta.psi.nodes.RutaDeclarationPsiNode;
 import vosk.ruta.psi.nodes.RutaPackageDeclarationPsiNode;
 import vosk.ruta.psi.nodes.RutaQualifiedIdentifier;
+import vosk.ruta.psi.nodes.RutaScriptPsiNode;
 
 public class RutaContextPsiElementFactory implements ContextPsiElementFactory {
 
@@ -54,6 +55,8 @@ public class RutaContextPsiElementFactory implements ContextPsiElementFactory {
                     return new RutaQualifiedIdentifier(node);
                 case "packageDeclaration":
                     return new RutaPackageDeclarationPsiNode(node);
+                case "importStatement":
+                    return new RutaScriptPsiNode(node);
 
 
             }

@@ -34,11 +34,13 @@
         <lang.braceMatcher language="Ruta" implementationClass="vosk.ruta.ui.brace.RutaBraceMatcher"/>
 
         <annotator language="Ruta" implementationClass="vosk.ruta.ui.annotator.PathToPackageMatcherAnnotator"/>
+        <annotator language="Ruta" implementationClass="vosk.ruta.ui.annotator.ScriptToFileAnnotator"/>
 
         <!--<framework.type implementation="vosk.ruta.ui.framework.RutaFramework"/>-->
         <facetType implementation="vosk.ruta.ui.facet.RutaFacetType"/>
         <projectStructureDetector implementation="vosk.ruta.projectStructureDetector.RutaProjectStructureDetector"/>
         <!--<moduleConfigurationEditorProvider implementation="vosk.ruta.ui.module.RutaModuleConfigurationEditorProvider"/>-->
+
     </extensions>
 
     <actions>
