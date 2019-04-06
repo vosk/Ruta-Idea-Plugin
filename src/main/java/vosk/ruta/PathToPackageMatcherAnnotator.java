@@ -18,7 +18,7 @@ public class PathToPackageMatcherAnnotator implements Annotator {
             if(containingFile instanceof RutaFile){
                 RutaScopePath fileScopePath = ((RutaFile) containingFile).getScopePath();
                 if(!fileScopePath.equal(packageScopePath))
-                    holder.createErrorAnnotation(element.getTextRange(), "Package "+packageScopePath+" does not match file path:"+fileScopePath);
+                    holder.createErrorAnnotation(element.getTextRange(), "Package "+packageScopePath+" does not match file path: "+fileScopePath);
             }
 
         }

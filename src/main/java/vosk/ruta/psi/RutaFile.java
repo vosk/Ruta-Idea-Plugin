@@ -46,9 +46,16 @@ public class RutaFile extends PsiFileBase implements RutaScope {
     }
 
     @Override
+    @NotNull
     public RutaScopePath getScopePath() {
         VirtualFile sourceRootForFile = ProjectFileIndex.getInstance(this.getProject()).getSourceRootForFile(this.getVirtualFile());
+        if(sourceRootForFile==null){
+            return RutaScopePath.builder().build();
+        }
         String relativePath = VfsUtilCore.getRelativePath(this.getVirtualFile(), sourceRootForFile, '/');
+        if(relativePath==null){
+            return RutaScopePath.builder().build();
+        }
         String[] split = relativePath.split("/");
 
         RutaScopePath.Builder builder = RutaScopePath.builder();
