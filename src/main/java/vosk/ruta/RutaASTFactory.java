@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import org.antlr.intellij.adaptor.lexer.TokenIElementType;
 import org.apache.uima.ruta.parser.debug.RutaLexer;
 import org.jetbrains.annotations.NotNull;
-import vosk.ruta.psi.nodes.IdentifierPsiNode;
+import vosk.ruta.psi.nodes.RutaIdentifierPsiNode;
 
 /** How to create parse tree nodes (Jetbrains calls them AST nodes). Later
  *  non-leaf nodes are converted to PSI nodes by the {@link ParserDefinition}.
@@ -51,7 +51,7 @@ public class RutaASTFactory extends CoreASTFactory {
 			//
 			// TODO: try not to create one for IDs under def subtree roots like vardef, function
 //			IElementType elementType = PsiElementFactory.get(type.getLanguage()).getRule(((TokenIElementType) type).getANTLRTokenType());
-			return new IdentifierPsiNode(type, text);
+			return new RutaIdentifierPsiNode(type, text);
 //			return null;
 		}
 		LeafElement leaf = super.createLeaf(type, text);

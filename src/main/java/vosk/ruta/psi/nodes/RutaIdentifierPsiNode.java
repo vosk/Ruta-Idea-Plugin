@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vosk.ruta.RutaLanguage;
+import vosk.ruta.psi.reference.RutaIdentiferReference;
 
 /** From doc: "Every element which can be renamed or referenced
  *             needs to implement com.intellij.psi.PsiNamedElement interface."
@@ -34,8 +35,8 @@ import vosk.ruta.RutaLanguage;
  *  You can click on an ID in the editor and ask for a codeInsight for any node
  *  of this type.
  */
-public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdentifierOwner {
-	public IdentifierPsiNode(IElementType type, CharSequence text) {
+public class RutaIdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdentifierOwner {
+	public RutaIdentifierPsiNode(IElementType type, CharSequence text) {
 		super(type, text);
 	}
 
@@ -66,7 +67,7 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdenti
 				kind = "func def ";
 			}
 		}
-		System.out.println("IdentifierPsiNode.setName("+name+") on "+
+		System.out.println("RutaIdentifierPsiNode.setName("+name+") on "+
 			                   kind+this+" at "+Integer.toHexString(this.hashCode()));
 		*/
 		//TODO this doesnt work
@@ -99,27 +100,12 @@ public class IdentifierPsiNode extends ANTLRPsiLeafNode implements PsiNameIdenti
 	 */
 	@Override
 	public PsiReference getReference() {
-//TODO 		PsiElement parent = getParent();
-//		IElementType elType = parent.getNode().getElementType();
-//		// do not return a reference for the ID nodes in a definition
-//		if ( elType instanceof RuleIElementType) {
-//			switch ( ((RuleIElementType) elType).getRuleIndex() ) {
-//				case RULE_statement :
-//				case RULE_expr :
-//				case RULE_primary :
-//					return new VariableReference(this);
-//				case RULE_call_expr :
-//					return new FunctionRef(this);
-//			}
+//		PsiReference reference = getParent().getReference();
+//		if(reference instanceof RutaScopedNode){
+//			((RutaScopedNode) reference).setSubPathUpTo(this);
 //		}
-//		PsiElement parent = getParent();
-//		while(parent!=null){
-//			if(RutaParserLogic.isSomekindOfDefinition(parent))
-//				return null;
-//			parent=parent.getParent();
-//		}
-//		return new VariableReference(this);
-		return null;
+//		return reference;
+		return new RutaIdentiferReference(this);
 	}
 
 

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import vosk.ruta.psi.nodes.path.RutaScopePath;
 
-public abstract class RutaScopedNode extends RutaQualifiedIdentifierHolder implements RutaScope, RutaPsiNode {
+public abstract class RutaScopedNode extends RutaQualifiedIdentifierHolder implements  RutaPsiNode {
 
     protected RutaScopePath path;
 
@@ -15,31 +15,44 @@ public abstract class RutaScopedNode extends RutaQualifiedIdentifierHolder imple
     }
 
     @Override
-    public PsiElement rootOfScope() {
-        return this;
-    }
-
-    @Override
     public void subtreeChanged() {
         path = null;
     }
+//
+//    protected void buildPath(RutaScopePath.TYPE type) {
+//       path=buildPath(type,null);
+//
+//    }
 
-    protected void buildPath(RutaScopePath.TYPE type) {
+    public RutaScopePath buildPath(RutaScopePath.TYPE type, PsiElement upto) {
         RutaScopePath.Builder builder = RutaScopePath.builder();
         PsiNamedElement identifierList = getNamedElementList();
         if (identifierList == null) {
             builder.build(type);
-            return;
+            return builder.build(type);
         }
         PsiElement psiChild = identifierList.getFirstChild();
         while (psiChild != null) {
-            if (psiChild instanceof IdentifierPsiNode) {
-                builder.postFix(((IdentifierPsiNode) psiChild).getName());
+            if (psiChild instanceof RutaIdentifierPsiNode) {
+                builder.postFix(((RutaIdentifierPsiNode) psiChild).getName());
+            }
+            if(psiChild == upto){
+                break;
             }
             psiChild = psiChild.getNextSibling();
+
         }
-        path = builder.build(type);
+        return builder.build(type);
 
     }
+    public abstract RutaScopePath.TYPE getScopePathType();
+
+    public RutaScopePath getFullScopePath(){
+        if(path==null){
+            path=buildPath(getScopePathType(),null);
+        }
+        return path;
+    }
+
 }
 

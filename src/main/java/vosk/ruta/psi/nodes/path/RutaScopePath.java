@@ -60,6 +60,10 @@ public class RutaScopePath {
         return new RutaScopePath(newPath, TYPE.FILE);
     }
 
+    public TYPE getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return String.join(".", path);

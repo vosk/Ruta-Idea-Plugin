@@ -16,7 +16,7 @@ public class PathToPackageMatcherAnnotator implements Annotator {
 
         if (element instanceof RutaPackageDeclarationPsiNode) {
             RutaPackageDeclarationPsiNode declarationPsiNode = ((RutaPackageDeclarationPsiNode) element);
-            RutaScopePath packageScopePath = declarationPsiNode.getScopePath();
+            RutaScopePath packageScopePath = declarationPsiNode.getFullScopePath();
             PsiFile containingFile = declarationPsiNode.getContainingFile();
             if(containingFile instanceof RutaFile){
                 RutaScopePath fileScopePath = ((RutaFile) containingFile).getScopePath().getPackagePath();

@@ -18,7 +18,7 @@ public class RutaDeclarationPsiNode extends ASTWrapperPsiElement implements PsiN
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        IdentifierPsiNode[] childrenByClass = this.findChildrenByClass(IdentifierPsiNode.class);
+        RutaIdentifierPsiNode[] childrenByClass = this.findChildrenByClass(RutaIdentifierPsiNode.class);
         if (childrenByClass.length == 1)
             return childrenByClass[0];
         return null;

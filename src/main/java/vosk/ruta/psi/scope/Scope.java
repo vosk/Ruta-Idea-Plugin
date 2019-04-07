@@ -3,7 +3,7 @@
 //import com.intellij.psi.PsiElement;
 //import com.intellij.psi.PsiReference;
 //
-//public interface RutaScope {
+//public interface RutaScopeReference {
 //
 //    PsiElement resolve(PsiReference reference);
 //

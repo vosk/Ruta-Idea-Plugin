@@ -6,19 +6,18 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import vosk.ruta.RutaFileType;
 import vosk.ruta.RutaLanguage;
-import vosk.ruta.psi.nodes.RutaScope;
 import vosk.ruta.psi.nodes.path.RutaScopePath;
 import vosk.ruta.psi.types.RutaTypeIndex;
 
 import javax.swing.*;
 import java.util.Arrays;
 
-public class RutaFile extends PsiFileBase implements RutaScope {
+public class RutaFile extends PsiFileBase  {
     private final RutaTypeIndex index = new RutaTypeIndex();
+
     public RutaFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, RutaLanguage.INSTANCE);
 
@@ -40,25 +39,19 @@ public class RutaFile extends PsiFileBase implements RutaScope {
         return super.getIcon(flags);
     }
 
-    @Override
-    public PsiElement rootOfScope() {
-        return this;
-    }
-
-    @Override
     @NotNull
     public RutaScopePath getScopePath() {
         RutaScopePath.Builder builder = RutaScopePath.builder();
         VirtualFile sourceRootForFile = ProjectFileIndex.getInstance(this.getProject()).getSourceRootForFile(this.getVirtualFile());
-        if(sourceRootForFile==null){
+        if (sourceRootForFile == null) {
             return builder.postFix(this.getName()).build(RutaScopePath.TYPE.FILE);
         }
         String relativePath = VfsUtilCore.getRelativePath(this.getVirtualFile(), sourceRootForFile, VfsUtilCore.VFS_SEPARATOR_CHAR);
-        if(relativePath==null){
+        if (relativePath == null) {
             return builder.postFix(this.getName()).build(RutaScopePath.TYPE.FILE);
         }
-        String[] split = relativePath.split( String.valueOf(VfsUtilCore.VFS_SEPARATOR_CHAR));
-        split[split.length-1]=this.getVirtualFile().getNameWithoutExtension();
+        String[] split = relativePath.split(String.valueOf(VfsUtilCore.VFS_SEPARATOR_CHAR));
+        split[split.length - 1] = this.getVirtualFile().getNameWithoutExtension();
         Arrays.stream(split)
                 .forEachOrdered(builder::postFix);
         return builder.build(RutaScopePath.TYPE.FILE);

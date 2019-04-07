@@ -11,11 +11,16 @@ public class RutaPackageDeclarationPsiNode extends RutaScopedNode {
         super(node);
     }
 
-    @Override
-    public RutaScopePath getScopePath() {
-        if (path == null)
-            buildPath(RutaScopePath.TYPE.PACKAGE);
+//    @Override
+//    public RutaScopePath getScopePath() {
+//        if (path == null)
+//            buildPath(RutaScopePath.TYPE.PACKAGE);
+//
+//        return path;
+//    }
 
-        return path;
+    @Override
+    public RutaScopePath.TYPE getScopePathType() {
+        return RutaScopePath.TYPE.PACKAGE;
     }
 }
