@@ -1,6 +1,31 @@
 # Ruta Support for IDEA IntelliJ
 This Idea plugin adds support for UIMA Ruta in IntelliJ.
 
+## Features
+
+### Since version 0.0.2
+* Syntax highlighting for .ruta files
+* Package and file path error detection and quickfixes
+
+### Not available - planned for next revisions
+* Doc comment support
+* Variable and type indexing: "go to declaration" for all elements 
+
+
+### Not available - planned for 0.1.0
+* Generate XMI output for stuff found in resource files 
+* Multi-module support, allow many TypeSystems to co-exist
+
+### Not available - planned for 0.2.0
+* UIMA TypeSystem generation: Run configurations to allow generation of the TypeSystem xml files
+* Multi-module support/ Multi-TypeSystem support
+
+### Not available - don't wait for it soon
+* External TypeSystem integration: import some other TypeSystem directly from XML.
+* Ruta WorkBench
+* Live Testing in side-by-side view editor
+* UIMA Ruta TextRuler framework support.
+  
 ## License 
 
 See ./LICENSE 
