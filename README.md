@@ -1,7 +1,7 @@
 # Ruta Support for IDEA IntelliJ
 This Idea plugin adds support for UIMA Ruta in IntelliJ.
 
-#License 
+## License 
 
 See ./LICENSE 
 ## Based on
@@ -37,8 +37,9 @@ the downloaded files are moved to a different package, to coexist happily with t
     * Get state recovery working for lexer
     * Get state recovery working for parser (fingers crossed)
     * Error handling messages
-    * Highlighting
-    * Code Renames
+    * Highlighting - {Basic Support Done}
+    * Reference Resolution - {Packages Done}
+    * Code Renames 
     * Code completion
     * Get it working for complex projects with multiple scripts
     * Code Scopes  

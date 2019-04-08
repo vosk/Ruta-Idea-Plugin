@@ -7,6 +7,7 @@ import org.antlr.intellij.adaptor.parser.RuleIElementType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * {@link com.intellij.psi.tree.IElementType} are registered by JetBrains, they are not supposed to be
  * constructed constantly. Therefore they are cached in these factories
@@ -25,12 +26,12 @@ public class PsiLanguageElementFactory {
         return ruleElements.get(name);
     }
 
-    public RuleIElementType getOrRegisterAsRule(String name,boolean owner) {
+    public RuleIElementType getOrRegisterAsRule(String name, boolean owner) {
         RuleIElementType exists = getRule(name);
         if (exists != null) {
             return exists;
         }
-        ruleElements.put(name, new RuleIElementType(name,owner,name,language));
+        ruleElements.put(name, new RuleIElementType(name, owner, name, language));
         return getRule(name);
     }
 
@@ -54,7 +55,7 @@ public class PsiLanguageElementFactory {
         }
         tokens.get(antlrToken).put(channel, new TokenIElementType(antlrToken,
                 channel,
-               String.valueOf(antlrToken),
+                String.valueOf(antlrToken),
                 language)
         );
         return getToken(antlrToken, channel);

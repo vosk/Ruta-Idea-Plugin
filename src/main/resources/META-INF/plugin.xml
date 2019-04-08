@@ -3,14 +3,29 @@
     <name>UIMA Ruta Language Support</name>
     <vendor email="manos.orfanoudakis@gmail.com" url="">Manos Orfanoudakis</vendor>
     <description><![CDATA[
-    UIMA Ruta Support for IDEA <br>
-    Basic editor and more in the future
-    Source available at: https://github.com/vosk/Ruta-Idea-Plugin
+<h3>Apache UIMA Ruta Support for IDEA</h3>
+<h4>Basic editor and more in the future</h4>
+
+.ruta files are recognized and highlighting works correctly. <br> <br>
+To add preliminary support for Ruta: <br>
+go to project properties, and then click on the module for which you want to add support.
+Click on the plus (+) icon on the top and selext UIMA Ruta from the list.
+Select the version you want to activate from the list on the right, the versions are automatically
+detected from Maven Central.
+<br>
+
+Currently, you can mix ruta files in a java projects.
+Packages are resolved relative to the content root: eg src/main
+
+Source available at: <a href="https://github.com/vosk/Ruta-Idea-Plugin"> github.com/vosk/Ruta-Idea-Plugin </a>  <br>
     ]]></description>
     <change-notes><![CDATA[
-        -First Revision April 2019:
-            *Basic syntax highlighting
-            *Some Package resolution capabilities
+        -Version: 0.0.2:<br>
+        *Package reference resolution
+        *Improve presentation in plugin repository site
+        -First Revision April 2019:<br>
+        *Basic syntax highlighting <br>
+        *Some Package resolution capabilities <br>
      ]]></change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
