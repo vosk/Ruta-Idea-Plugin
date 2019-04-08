@@ -40,6 +40,7 @@ publishPlugin {
 }
 
 patchPluginXml{
+    pluginDescription = new File('./src/main/resources/META-INF/Description.html').getText('UTF-8')
 
 }
 def genSource= 'src/main/gen'
