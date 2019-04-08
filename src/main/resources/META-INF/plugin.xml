@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>vosk.ruta.ruta-idea-plugin</id>
     <name>UIMA Ruta Language Support</name>
-    <vendor email="manos.orfanoudakis@gmail.com" url="">Manos Orfanoudakis</vendor>
+    <vendor email="" url="https://github.com/vosk/Ruta-Idea-Plugin">vosk</vendor>
     <description>see Description.html</description>
     <change-notes><![CDATA[
         -Version: 0.0.2:<br>
